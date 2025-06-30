@@ -59,21 +59,15 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(googleAppsScriptUrl, {
                 method: 'POST',
-                mode: 'cors',
+                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData)
             });
-
-            const result = await response.json();
-
-            if (result.success) {
                 alert('Purchase request submitted successfully!');
                 closeModal(); // Use the common close function
-            } else {
-                alert('Error submitting purchase request: ' + result.message);
-            }
+            } 
         } catch (error) {
             console.error('Error:', error);
             alert('An error occurred while submitting the request. Please try again.');
