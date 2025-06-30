@@ -1,3 +1,6 @@
+// GLOBAL variable defined
+const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbypgHg1iEHE6FQ-LJzaV3s4ETk1SKnAl1nulM6tBFUcQRuYOWb11sR9U2Bpw-9NcsEU/exec';
+
 // purchaseRequest.js
 document.addEventListener('DOMContentLoaded', () => {
     const raisePurchaseRequestBtn = document.getElementById('raise-purchase-request-btn');
@@ -53,9 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
             'CRM Name': crmName,
             'Request Date': requestDate
         };
-
-        const googleAppsScriptUrl = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
-
         try {
             const response = await fetch(googleAppsScriptUrl, {
                 method: 'POST',
