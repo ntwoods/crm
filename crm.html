@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NT Woods CRM – Unified Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="js/reload.js" defer></script>
+  <script src="js/navigation.js" defer></script>
+
+  <script>
+    const email = localStorage.getItem("crmEmail");
+    const crmName = localStorage.getItem("crmName");
+
+    if (!email || !crmName) {
+      alert("Access denied or session expired. Please login again.");
+      window.location.href = "login.html";
+    }
+
+    window.CRM_NAME = crmName;
+    window.ENCODED_CRM = encodeURIComponent(crmName);
+  </script>
+
+  <script src="js/api-config.js" defer></script>
+</head>
+<body>
+  <div class="dashboard-container">
+    <a id="additional-order-link" class="additional-order-btn" href="#">Additional Order</a>
+
+    <div class="header">
+      <div class="logo-wrapper">
+        <img src="ntwoodsimg.jpg" class="logo-img" alt="NT Logo" />
+      </div>
+      <div class="header-text">
+        <h1 class="company-name">NT Woods Pvt. Ltd.</h1>
+        <p id="crm-tagline">Loading...</p>
+      </div>
+    </div>
+
+    <div class="workflow-container" id="workflow-container">
+      <!-- Cards will be generated here -->
+    </div>
+  </div>
+
+  <script src="js/generateTiles.js" defer></script>
+  <script src="js/dashboard.js" defer></script>
+</body>
+</html>
