@@ -236,28 +236,6 @@
         .workflow-card:hover .card-icon {
             transform: rotate(8deg) scale(1.05); /* Subtler rotate/scale */
         }
-
-/* Styles for the new button */
-.purchase-request-btn {
-  display: block;
-  width: 200px; /* Adjust as needed */
-  padding: 10px 15px;
-  background-color: #007bff; /* Different color */
-  color: white;
-  text-align: center;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-  margin: 10px auto; /* Adjust margin to place it below Additional Order button */
-  cursor: pointer;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.purchase-request-btn:hover {
-  background-color: #0056b3;
-}
-
 /* Styles for the modal */
 .modal {
   display: none; /* Hidden by default */
