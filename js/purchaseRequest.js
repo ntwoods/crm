@@ -9,9 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitPrButton = document.getElementById('submit-pr-button'); // Get the submit button
     const prLoadingSpinner = document.getElementById('pr-loading-spinner'); // Get the spinner
 
+// purchaseRequest.js
+// ... (previous code) ...
+
     // Function to show a toast notification
     function showToast(message, type = 'info', duration = 3000) {
         const toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) { // Safety check
+            console.error('Toast container not found!');
+            return;
+        }
+
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         toast.textContent = message;
@@ -21,15 +29,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show the toast
         setTimeout(() => {
             toast.classList.add('show');
-        }, 10); // Small delay to allow CSS transition
+            // Optional: If you want the toast to block clicks while visible,
+            // you can temporarily add a class to toastContainer
+            // toastContainer.classList.add('active');
+        }, 10);
 
         // Hide and remove the toast after a duration
         setTimeout(() => {
             toast.classList.remove('show');
+            // Optional: Remove the 'active' class from toastContainer
+            // toastContainer.classList.remove('active');
             toast.addEventListener('transitionend', () => toast.remove());
         }, duration);
     }
 
+// ... (rest of the purchaseRequest.js code remains the same) ...
     // Show the modal when the button is clicked
     raisePurchaseRequestBtn.addEventListener('click', () => {
         purchaseRequestModal.style.display = 'block';
