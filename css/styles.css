@@ -485,29 +485,45 @@
 }
 
 /* Styles for the Toast Notifications */
+/* ... (existing CSS for .loading-spinner, etc.) ... */
+
+/* Styles for the Toast Notifications - MODIFIED FOR CENTER */
 #toast-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust for its own size */
   z-index: 1001; /* Above modal */
+  display: flex; /* Use flexbox to center content */
+  align-items: center; /* Center items vertically in flex container */
+  justify-content: center; /* Center items horizontally in flex container */
+  pointer-events: none; /* Allows clicks to pass through to elements behind it */
+  width: 100%; /* Take full width to help with centering */
+  height: 100%; /* Take full height to help with centering */
+  overflow: hidden; /* Hide overflow if toast is too large */
 }
 
 .toast {
   background-color: #333;
   color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  padding: 25px 40px; /* Larger padding for a bolder look */
+  border-radius: 10px; /* Slightly more rounded corners */
   opacity: 0;
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-  transform: translateY(20px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  min-width: 250px;
+  transform: translateY(20px) scale(0.9); /* Start slightly scaled down and off-center */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* More prominent shadow */
+  min-width: 300px; /* Wider toast */
+  text-align: center; /* Center the text */
+  font-size: 1.2em; /* Larger font size */
+  font-weight: bold; /* Make text bolder */
+  display: flex; /* Flexbox for internal content alignment */
+  align-items: center;
+  justify-content: center;
 }
 
 .toast.show {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1); /* Return to original size and position */
 }
 
 .toast.success {
@@ -522,6 +538,26 @@
   background-color: #17a2b8; /* Blue for info */
 }
 
+/* Optional: Add a subtle icon or emoji for better visual appeal based on type */
+.toast.success::before {
+    content: '✔️'; /* Checkmark emoji */
+    margin-right: 10px;
+}
+
+.toast.error::before {
+    content: '❌'; /* Cross emoji */
+    margin-right: 10px;
+}
+
+.toast.info::before {
+    content: 'ℹ️'; /* Info emoji */
+    margin-right: 10px;
+}
+
+/* Make the toast container cover the whole screen while showing, but allow pointer events to pass through */
+#toast-container.active {
+    pointer-events: auto; /* Re-enable pointer events if you want interaction, but typically for toasts, you want pass-through */
+}
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-15px) rotate(180deg); } /* Reduced float distance */
