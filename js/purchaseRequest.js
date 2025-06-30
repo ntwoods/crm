@@ -1,3 +1,4 @@
+// purchaseRequest.js
 document.addEventListener('DOMContentLoaded', () => {
     const raisePurchaseRequestBtn = document.getElementById('raise-purchase-request-btn');
     const purchaseRequestModal = document.getElementById('purchase-request-modal');
@@ -7,19 +8,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show the modal when the button is clicked
     raisePurchaseRequestBtn.addEventListener('click', () => {
         purchaseRequestModal.style.display = 'block';
+        if (typeof isModalOpen !== 'undefined') { // Ensure the global flag exists
+            isModalOpen = true; // Set flag to true when modal is open
+        }
     });
 
-    // Hide the modal when the close button is clicked
-    closeButton.addEventListener('click', () => {
+    // Function to close the modal and reset the flag
+    const closeModal = () => {
         purchaseRequestModal.style.display = 'none';
         purchaseRequestForm.reset(); // Clear the form when closed
-    });
+        if (typeof isModalOpen !== 'undefined') { // Ensure the global flag exists
+            isModalOpen = false; // Set flag to false when modal is closed
+        }
+    };
+
+    // Hide the modal when the close button is clicked
+    closeButton.addEventListener('click', closeModal);
 
     // Hide the modal when clicking outside of it
     window.addEventListener('click', (event) => {
         if (event.target === purchaseRequestModal) {
-            purchaseRequestModal.style.display = 'none';
-            purchaseRequestForm.reset(); // Clear the form when closed
+            closeModal();
         }
     });
 
@@ -45,13 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
             'Request Date': requestDate
         };
 
-        // Replace with your Google Apps Script Web App URL
-        const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbypgHg1iEHE6FQ-LJzaV3s4ETk1SKnAl1nulM6tBFUcQRuYOWb11sR9U2Bpw-9NcsEU/exec'; // IMPORTANT: You need to set this up
+        const googleAppsScriptUrl = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
 
         try {
             const response = await fetch(googleAppsScriptUrl, {
                 method: 'POST',
-                mode: 'cors', // Crucial for cross-origin requests
+                mode: 'cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -62,8 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.success) {
                 alert('Purchase request submitted successfully!');
-                purchaseRequestModal.style.display = 'none'; // Close modal on success
-                purchaseRequestForm.reset(); // Clear form
+                closeModal(); // Use the common close function
             } else {
                 alert('Error submitting purchase request: ' + result.message);
             }
