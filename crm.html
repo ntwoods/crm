@@ -27,6 +27,7 @@
 <body>
   <div class="dashboard-container">
     <a id="additional-order-link" class="additional-order-btn" href="#">Additional Order</a>
+    <button id="raise-purchase-request-btn" class="purchase-request-btn">Raise Purchase Request</button>
 
     <div class="header">
       <div class="logo-wrapper">
@@ -39,11 +40,40 @@
     </div>
 
     <div class="workflow-container" id="workflow-container">
-      <!-- Cards will be generated here -->
+      </div>
+  </div>
+
+  <div id="purchase-request-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Raise Purchase Request</h2>
+      <form id="purchase-request-form">
+        <label for="dealer-name">Dealer Name:</label>
+        <input type="text" id="dealer-name" name="Dealer Name" required>
+
+        <label for="product-name">Product Name:</label>
+        <textarea id="product-name" name="Product Name" rows="3" required></textarea>
+
+        <label for="quantity">Quantity:</label>
+        <input type="text" id="quantity" name="Qty" required>
+
+        <label for="priority-level">Priority Level:</label>
+        <select id="priority-level" name="Priority Level" required>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+
+        <label for="remarks">Remarks:</label>
+        <textarea id="remarks" name="Remarks" rows="3"></textarea>
+
+        <button type="submit">Submit Request</button>
+      </form>
     </div>
   </div>
 
   <script src="js/generateTiles.js" defer></script>
   <script src="js/dashboard.js" defer></script>
+  <script src="js/purchaseRequest.js" defer></script>
 </body>
 </html>
