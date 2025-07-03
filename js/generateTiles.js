@@ -19,7 +19,7 @@ const cardsData = [
     title: "Check Credit & Stock Status",
     description:
       "Proceed even if there's insufficient stock or credit status is not Okay.",
-    url: "LEVEL-3&4%20CRM%20Checking%20Credit%20Status%20&%20Stock%20Status%20-%20Approve%20or%20Hold.html",
+    url: "L1.html",
   },
   {
     id: "level5",
@@ -27,7 +27,7 @@ const cardsData = [
     title: "Confirm with Accounts Team then Call Dealer",
     description:
       "Confirm with Accounts team based on party categories and then confirm the order.",
-    url: "LEVEL-5-CRM%20Call%20to%20Dealer%20+%20Updated%20Order%20File%20+%20Sent%20Order%20to%20Owners%20(WhatsApp%20and%20Call).html",
+    url: "L2.html",
   },
   {
     id: "owner-approval",
@@ -41,21 +41,21 @@ const cardsData = [
     level: "Level-3",
     title: "Get Tentative Dispatch Date",
     description: "Coordinate with Dispatch Department to Get Tentative Timeline",
-    url: "LEVEL-6-TENTATIVE_DISPATCH_DATE.HTML",
+    url: "L3.html",
   },
   {
     id: "level7",
     level: "Level-4",
     title: "Remind Dispatch Department",
     description: "Send Reminder 1 Day Before Dispatch",
-    url: "LEVEL-7-Reminder%20To%20Dispatch%20Department.html",
+    url: "L4.html",
   },
   {
     id: "level8",
     level: "Level-5",
     title: "Inform Dealer About Dispatch",
     description: "Final Communication - Inform Dealer About Complete Dispatch Details",
-    url: "LEVEL-8-Dealer%20Informed%20About%20Dispatch%20Details.html",
+    url: "L5.html",
   },
   {
     id: "level9",
