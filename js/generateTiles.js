@@ -11,7 +11,7 @@ const cardsData = [
     level: "On Hold",
     title: "Orders on Hold",
     description: "View and manage all orders currently on hold.",
-    url: "HoldOrdersManagement",
+    url: "L7.html",
   },
   {
     id: "level34",
@@ -62,7 +62,7 @@ const cardsData = [
     level: "Level-6",
     title: "Goods Delivery Confirmation",
     description: "Confirmation of Goods Receiving from Dealer.",
-    url: "DeliveryConfirmation",
+    url: "L6.html",
   },
 ];
 
