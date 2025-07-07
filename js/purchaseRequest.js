@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Request Date': requestDate
         };
 
-        const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbxO2VAH8_wBM95jrXypds-v5tNKmEta41Midtk-skMKGrpmne-Th5UBH8Cw5p8D0fLU/exec';
+        const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbyffY1_V3ap0VOnFJ8tIPP5bR9_gy_cVQ8_WmLpu0Q6E_dzHOUDPbdXnP4Db5gXRyxl/exec';
 
         try {
             await fetch(googleAppsScriptUrl, {
