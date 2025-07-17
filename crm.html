@@ -14,8 +14,31 @@
     const crmName = localStorage.getItem("crmName");
 
     if (!email || !crmName) {
-      alert("Access denied or session expired. Please login again.");
-      window.location.href = "login.html";
+      // Using a custom message box instead of alert()
+      const showMessageBox = (message, type = 'info') => {
+          const modal = document.createElement('div');
+          modal.className = 'modal';
+          modal.innerHTML = `
+              <div class="modal-content">
+                  <span class="close-button">&times;</span>
+                  <p>${message}</p>
+              </div>
+          `;
+          document.body.appendChild(modal);
+          modal.style.display = 'block';
+
+          modal.querySelector('.close-button').onclick = () => {
+              modal.remove();
+              window.location.href = "login.html";
+          };
+          window.onclick = (event) => {
+              if (event.target == modal) {
+                  modal.remove();
+                  window.location.href = "login.html";
+              }
+          };
+      };
+      showMessageBox("Access denied or session expired. Please login again.", "error");
     }
 
     window.CRM_NAME = crmName;
@@ -52,11 +75,15 @@
         <label for="dealer-name">Dealer Name:</label>
         <input type="text" id="dealer-name" name="Dealer Name" required>
 
-        <label for="product-name">Product Name:</label>
+        <!-- Removed Product Name and Quantity fields -->
+        <!-- <label for="product-name">Product Name:</label>
         <textarea id="product-name" name="Product Name" rows="3" required></textarea>
 
         <label for="quantity">Quantity:</label>
-        <input type="text" id="quantity" name="Qty" required>
+        <input type="text" id="quantity" name="Qty" required> -->
+
+        <label for="required-items-file">Required Items (File Attachment):</label>
+        <input type="file" id="required-items-file" name="Required Items File" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png" required>
 
         <label for="priority-level">Priority Level:</label>
         <select id="priority-level" name="Priority Level" required>
