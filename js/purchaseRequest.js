@@ -6,9 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const purchaseRequestForm = document.getElementById('purchase-request-form');
     const submitPrButton = document.getElementById('submit-pr-button'); // Get the submit button
     const prLoadingSpinner = document.getElementById('pr-loading-spinner'); // Get the spinner
-
-// purchaseRequest.js
-// ... (previous code) ...
+    const requiredItemsFile = document.getElementById('required-items-file'); // Get the new file input
 
     // Function to show a toast notification
     function showToast(message, type = 'info', duration = 3000) {
@@ -27,21 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show the toast
         setTimeout(() => {
             toast.classList.add('show');
-            // Optional: If you want the toast to block clicks while visible,
-            // you can temporarily add a class to toastContainer
-            // toastContainer.classList.add('active');
         }, 10);
 
         // Hide and remove the toast after a duration
         setTimeout(() => {
             toast.classList.remove('show');
-            // Optional: Remove the 'active' class from toastContainer
-            // toastContainer.classList.remove('active');
             toast.addEventListener('transitionend', () => toast.remove());
         }, duration);
     }
 
-// ... (rest of the purchaseRequest.js code remains the same) ...
     // Show the modal when the button is clicked
     raisePurchaseRequestBtn.addEventListener('click', () => {
         purchaseRequestModal.style.display = 'block';
@@ -73,6 +65,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Function to convert file to Base64
+    const getBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
     // Handle form submission
     purchaseRequestForm.addEventListener('submit', async (event) => {
         event.preventDefault(); // Prevent default form submission
@@ -83,21 +85,39 @@ document.addEventListener('DOMContentLoaded', () => {
         submitPrButton.textContent = 'Submitting...';
 
         const dealerName = document.getElementById('dealer-name').value;
-        const productName = document.getElementById('product-name').value;
-        const quantity = document.getElementById('quantity').value;
         const priorityLevel = document.getElementById('priority-level').value;
         const remarks = document.getElementById('remarks').value;
         const crmName = window.CRM_NAME;
         const requestDate = new Date().toLocaleString();
 
+        let fileDataBase64 = null;
+        if (requiredItemsFile.files.length > 0) {
+            try {
+                fileDataBase64 = await getBase64(requiredItemsFile.files[0]);
+            } catch (error) {
+                console.error('Error converting file to Base64:', error);
+                showToast('Failed to read file. Please try again.', 'error');
+                prLoadingSpinner.style.display = 'none';
+                submitPrButton.disabled = false;
+                submitPrButton.textContent = 'Submit Request';
+                return; // Stop submission if file conversion fails
+            }
+        } else {
+            showToast('Please attach the required items file.', 'error');
+            prLoadingSpinner.style.display = 'none';
+            submitPrButton.disabled = false;
+            submitPrButton.textContent = 'Submit Request';
+            return; // Stop submission if no file is attached
+        }
+
         const formData = {
             'Dealer Name': dealerName,
-            'Product Name': productName,
-            'Qty': quantity,
             'Priority Level': priorityLevel,
             'Remarks': remarks,
             'CRM Name': crmName,
-            'Request Date': requestDate
+            'Request Date': requestDate,
+            'Required Items File Data': fileDataBase64, // Include Base64 file data
+            'Required Items File Name': requiredItemsFile.files[0].name // Include file name
         };
 
         const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbyffY1_V3ap0VOnFJ8tIPP5bR9_gy_cVQ8_WmLpu0Q6E_dzHOUDPbdXnP4Db5gXRyxl/exec';
@@ -105,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await fetch(googleAppsScriptUrl, {
                 method: 'POST',
-                mode: 'no-cors',
+                mode: 'no-cors', // Use 'no-cors' for Google Apps Script to avoid CORS issues on client-side
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -113,13 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // If fetch completes without network error, show success notification
-            showToast('Purchase request sent!', 'success'); // Change alert to toast
+            showToast('Purchase request sent!', 'success');
             closeModal(); // Close the modal
 
         } catch (error) {
             // This catches network errors (e.g., no internet, script URL typo)
             console.error('Error sending purchase request:', error);
-            showToast('Failed to send request. Check connection.', 'error'); // Change alert to toast
+            showToast('Failed to send request. Check connection.', 'error');
             // Do not close modal on error, allow user to retry or inspect
             // Re-enable button and hide spinner on error
             prLoadingSpinner.style.display = 'none';
