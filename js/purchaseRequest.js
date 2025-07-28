@@ -95,21 +95,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ✅ NEXT button logic
     proceedToQtyBtn.addEventListener('click', () => {
-      const selectedOptions = choicesInstance.getValue(); // returns array of {value: "...", label: "..."}
+      const selectedOptions = choicesInstance.getValue(); // full objects with {value, label}
     
       if (!selectedOptions || selectedOptions.length === 0) {
         showToast('Please select at least one item.', 'error');
         return;
       }
     
-      qtyFieldsContainer.innerHTML = '';
+      qtyFieldsContainer.innerHTML = ''; // Clear previous fields
     
       selectedOptions.forEach(option => {
         const item = option.value;
+        const safeItemId = item.replace(/\s+/g, '-').toLowerCase(); // Make a safe HTML ID
+    
         const div = document.createElement('div');
+        div.classList.add('qty-input-pair');
         div.innerHTML = `
-          <label>${item}</label>
-          <input type="number" data-item="${item}" min="1" placeholder="Qty" required style="width: 100%; margin-bottom: 12px;" />
+          <label for="qty-${safeItemId}">${item}</label>
+          <input type="number" id="qty-${safeItemId}" data-item="${item}" min="1" placeholder="Enter Quantity" required style="width:100%; margin-bottom:10px;" />
         `;
         qtyFieldsContainer.appendChild(div);
       });
@@ -131,23 +134,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const crmName = window.CRM_NAME;
         const requestDate = new Date().toLocaleString();
 
-        const qtyInputs = document.querySelectorAll('#qty-fields-container input');
-        let itemQtyMap = {};
-        
-        for (const input of qtyInputs) {
-          const item = input.getAttribute('data-item');
-          const qty = input.value.trim();
-        
-          if (!item || !qty || isNaN(qty) || parseInt(qty) <= 0) {
-            showToast(`Enter valid quantity for ${item || 'unknown item'}`, 'error');
-            prLoadingSpinner.style.display = 'none';
-            submitPrButton.disabled = false;
-            submitPrButton.textContent = 'Submit Request';
-            return;
-          }
-        
-          itemQtyMap[item] = parseInt(qty);
-        }
+const qtyInputs = document.querySelectorAll('#qty-fields-container input');
+let itemQtyMap = {};
+
+qtyInputs.forEach(input => {
+  const item = input.getAttribute('data-item')?.trim();
+  const qty = parseInt(input.value.trim());
+
+  if (!item || isNaN(qty) || qty <= 0) {
+    showToast(`Invalid quantity for ${item || 'unknown item'}`, 'error');
+    throw new Error('Invalid qty input');
+  }
+
+  itemQtyMap[item] = qty;
+});
 
         const formData = {
             'Dealer Name': dealerName,
