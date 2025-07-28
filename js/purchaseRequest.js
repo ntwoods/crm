@@ -94,32 +94,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ✅ NEXT button logic
-proceedToQtyBtn.addEventListener('click', () => {
-  const selectedOptions = choicesInstance.getValue(); // returns [{value:..., label:...}]
-
-  if (!selectedOptions || selectedOptions.length === 0) {
-    showToast('Please select at least one item.', 'error');
-    return;
-  }
-
-  qtyFieldsContainer.innerHTML = ''; // Clear previous inputs
-
-  selectedOptions.forEach(option => {
-    const item = option.value?.trim();
-    if (!item) return; // Skip if empty
-
-    const safeId = item.replace(/\W+/g, '-').toLowerCase();
-
-    const div = document.createElement('div');
-    div.innerHTML = `
-      <label for="qty-${safeId}">${item}</label>
-      <input type="number" id="qty-${safeId}" data-item="${item}" placeholder="Quantity" min="1" style="width: 100%; margin-bottom: 10px;" required />
-    `;
-    qtyFieldsContainer.appendChild(div);
-  });
-
-  qtySection.style.display = 'block';
-});
+    proceedToQtyBtn.addEventListener('click', () => {
+      const selectedOptions = choicesInstance.getValue(); // [{ value: '8x4 9M PRA', label: ... }]
+    
+      if (!selectedOptions || selectedOptions.length === 0) {
+        showToast('Please select at least one item.', 'error');
+        return;
+      }
+    
+      qtyFieldsContainer.innerHTML = '';
+    
+      selectedOptions.forEach(option => {
+        const item = option.value?.trim();
+        if (!item) return;
+    
+        const safeId = item.replace(/\W+/g, '-').toLowerCase(); // Safe for id
+    
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <label for="qty-${safeId}">${item}</label>
+          <input 
+            type="number"
+            id="qty-${safeId}"
+            data-item="${item}" 
+            placeholder="Quantity" 
+            min="1" 
+            style="width: 100%; margin-bottom: 10px;" 
+            required
+          />
+        `;
+        qtyFieldsContainer.appendChild(div);
+      });
+    
+      qtySection.style.display = 'block';
+    });
 
     // ✅ Final form submit logic
     purchaseRequestForm.addEventListener('submit', async (event) => {
