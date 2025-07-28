@@ -95,24 +95,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ✅ NEXT button logic
     proceedToQtyBtn.addEventListener('click', () => {
-        const selectedItems = choicesInstance.getValue(true); // array of selected strings
-
-        if (selectedItems.length === 0) {
-            showToast('Please select at least one item.', 'error');
-            return;
-        }
-
-        qtyFieldsContainer.innerHTML = '';
-        selectedItems.forEach(item => {
-            const div = document.createElement('div');
-            div.innerHTML = `
-                <label>${item}</label>
-                <input type="number" data-item="${item}" min="1" placeholder="Qty" required style="width: 100%; margin-bottom: 12px;" />
-            `;
-            qtyFieldsContainer.appendChild(div);
-        });
-
-        qtySection.style.display = 'block';
+      const selectedOptions = choicesInstance.getValue(); // returns array of {value: "...", label: "..."}
+    
+      if (!selectedOptions || selectedOptions.length === 0) {
+        showToast('Please select at least one item.', 'error');
+        return;
+      }
+    
+      qtyFieldsContainer.innerHTML = '';
+    
+      selectedOptions.forEach(option => {
+        const item = option.value;
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <label>${item}</label>
+          <input type="number" data-item="${item}" min="1" placeholder="Qty" required style="width: 100%; margin-bottom: 12px;" />
+        `;
+        qtyFieldsContainer.appendChild(div);
+      });
+    
+      qtySection.style.display = 'block';
     });
 
     // ✅ Final form submit logic
@@ -131,20 +133,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const qtyInputs = document.querySelectorAll('#qty-fields-container input');
         let itemQtyMap = {};
-
+        
         for (const input of qtyInputs) {
-            const item = input.getAttribute('data-item');
-            const qty = input.value.trim();
-
-            if (!qty || isNaN(qty) || parseInt(qty) <= 0) {
-                showToast(`Enter valid quantity for ${item}`, 'error');
-                prLoadingSpinner.style.display = 'none';
-                submitPrButton.disabled = false;
-                submitPrButton.textContent = 'Submit Request';
-                return;
-            }
-
-            itemQtyMap[item] = parseInt(qty);
+          const item = input.getAttribute('data-item');
+          const qty = input.value.trim();
+        
+          if (!item || !qty || isNaN(qty) || parseInt(qty) <= 0) {
+            showToast(`Enter valid quantity for ${item || 'unknown item'}`, 'error');
+            prLoadingSpinner.style.display = 'none';
+            submitPrButton.disabled = false;
+            submitPrButton.textContent = 'Submit Request';
+            return;
+          }
+        
+          itemQtyMap[item] = parseInt(qty);
         }
 
         const formData = {
