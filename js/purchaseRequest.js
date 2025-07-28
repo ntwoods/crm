@@ -95,35 +95,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ✅ NEXT button logic
     proceedToQtyBtn.addEventListener('click', () => {
-      const selectedOptions = choicesInstance.getValue(); // [{ value: '8x4 9M PRA', label: ... }]
+      const selectedOptions = choicesInstance.getValue(); // [{ value: ..., label: ... }]
     
       if (!selectedOptions || selectedOptions.length === 0) {
         showToast('Please select at least one item.', 'error');
         return;
       }
     
-      qtyFieldsContainer.innerHTML = '';
+      qtyFieldsContainer.innerHTML = ''; // Clear old inputs
     
       selectedOptions.forEach(option => {
         const item = option.value?.trim();
         if (!item) return;
     
-        const safeId = item.replace(/\W+/g, '-').toLowerCase(); // Safe for id
+        const safeId = item.replace(/\W+/g, '-').toLowerCase();
     
-        const div = document.createElement('div');
-        div.innerHTML = `
-          <label for="qty-${safeId}">${item}</label>
-          <input 
-            type="number"
-            id="qty-${safeId}"
-            data-item="${item}" 
-            placeholder="Quantity" 
-            min="1" 
-            style="width: 100%; margin-bottom: 10px;" 
-            required
-          />
-        `;
-        qtyFieldsContainer.appendChild(div);
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = '1';
+        input.required = true;
+        input.placeholder = 'Quantity';
+        input.style.width = '100%';
+        input.style.marginBottom = '10px';
+        input.setAttribute('data-item', item);
+        input.setAttribute('id', `qty-${safeId}`);
+    
+        const label = document.createElement('label');
+        label.setAttribute('for', `qty-${safeId}`);
+        label.textContent = item;
+    
+        const wrapper = document.createElement('div');
+        wrapper.appendChild(label);
+        wrapper.appendChild(input);
+    
+        qtyFieldsContainer.appendChild(wrapper);
       });
     
       qtySection.style.display = 'block';
