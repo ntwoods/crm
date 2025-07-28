@@ -4,158 +4,147 @@ document.addEventListener('DOMContentLoaded', () => {
     const purchaseRequestModal = document.getElementById('purchase-request-modal');
     const closeButton = purchaseRequestModal.querySelector('.close-button');
     const purchaseRequestForm = document.getElementById('purchase-request-form');
-    const submitPrButton = document.getElementById('submit-pr-button'); // Get the submit button
-    const prLoadingSpinner = document.getElementById('pr-loading-spinner'); // Get the spinner
-    const requiredItemsFile = document.getElementById('required-items-file'); // Get the new file input
-    fetchItemListFromSheet(); // Load item dropdown from IMS sheet
-    
-async function fetchItemListFromSheet() {
-  const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
+    const submitPrButton = document.getElementById('submit-pr-button');
+    const prLoadingSpinner = document.getElementById('pr-loading-spinner');
+    const proceedToQtyBtn = document.getElementById('proceed-to-qty-btn');
+    const qtySection = document.getElementById('qty-input-section');
+    const qtyFieldsContainer = document.getElementById('qty-fields-container');
 
-  try {
-    const response = await fetch(url);
-    const csvText = await response.text();
+    let choicesInstance = null;
 
-    // Parse CSV and get only Column C (starting from Row 3)
-    const rows = csvText.split('\n').slice(2); // skip header and first row
-    const items = rows
-      .map(row => row.split(',')[2]) // column C (0-indexed)
-      .filter(item => item && item.trim() !== '');
+    // Load items and initialize dropdown
+    async function fetchItemListFromSheet() {
+        const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
+        try {
+            const response = await fetch(url);
+            const csvText = await response.text();
+            const rows = csvText.split('\n').slice(2); // skip headers
+            const items = rows.map(row => row.split(',')[2]).filter(item => item && item.trim() !== '');
 
-    const selector = document.getElementById('item-selector');
-    selector.innerHTML = "";
+            const selector = document.getElementById('item-selector');
+            selector.innerHTML = '';
 
-    items.forEach(item => {
-      const opt = document.createElement('option');
-      opt.value = item;
-      opt.textContent = item;
-      selector.appendChild(opt);
-    });
-
-    initChoicesDropdown(); // activate Choices.js
-
-  } catch (error) {
-    console.error('Failed to fetch item list:', error);
-    showToast('Failed to load item list.', 'error');
-  }
-}
-
-        let choicesInstance = null;
-        
-        function initChoicesDropdown() {
-            const selectEl = document.getElementById('item-selector');
-            if (choicesInstance) choicesInstance.destroy(); // Avoid duplicates
-            choicesInstance = new Choices(selectEl, {
-                removeItemButton: true,
-                searchEnabled: true,
-                placeholderValue: 'Search and select items',
-                noResultsText: 'No items found',
-                itemSelectText: '',
-                maxItemCount: 50 // Optional: set a max if needed
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                selector.appendChild(opt);
             });
-        }
-    
-    // Function to show a toast notification
 
+            initChoicesDropdown();
+        } catch (error) {
+            console.error('Failed to fetch item list:', error);
+            showToast('Failed to load item list.', 'error');
+        }
+    }
+
+    function initChoicesDropdown() {
+        const selectEl = document.getElementById('item-selector');
+        if (choicesInstance) choicesInstance.destroy();
+
+        choicesInstance = new Choices(selectEl, {
+            removeItemButton: true,
+            searchEnabled: true,
+            placeholderValue: 'Search and select items',
+            noResultsText: 'No items found',
+            itemSelectText: '',
+            maxItemCount: 100
+        });
+    }
+
+    // Toast message
     function showToast(message, type = 'info', duration = 3000) {
         const toastContainer = document.getElementById('toast-container');
-        if (!toastContainer) { // Safety check
-            console.error('Toast container not found!');
-            return;
-        }
+        if (!toastContainer) return;
 
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         toast.textContent = message;
-
         toastContainer.appendChild(toast);
 
-        // Show the toast
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
-
-        // Hide and remove the toast after a duration
+        setTimeout(() => toast.classList.add('show'), 10);
         setTimeout(() => {
             toast.classList.remove('show');
             toast.addEventListener('transitionend', () => toast.remove());
         }, duration);
     }
 
-    // Show the modal when the button is clicked
+    // Modal show/hide
     raisePurchaseRequestBtn.addEventListener('click', () => {
         purchaseRequestModal.style.display = 'block';
-        if (typeof isModalOpen !== 'undefined') { // Ensure the global flag exists
-            isModalOpen = true; // Set flag to true when modal is open
-        }
+        isModalOpen = true;
+        fetchItemListFromSheet();
     });
 
-    // Function to close the modal and reset the flag
     const closeModal = () => {
         purchaseRequestModal.style.display = 'none';
-        purchaseRequestForm.reset(); // Clear the form when closed
-        if (typeof isModalOpen !== 'undefined') { // Ensure the global flag exists
-            isModalOpen = false; // Set flag to false when modal is closed
-        }
-        // Ensure spinner is hidden when modal closes
+        purchaseRequestForm.reset();
+        qtySection.style.display = 'none';
+        qtyFieldsContainer.innerHTML = '';
+        isModalOpen = false;
         prLoadingSpinner.style.display = 'none';
-        submitPrButton.disabled = false; // Re-enable button
-        submitPrButton.textContent = 'Submit Request'; // Reset button text
+        submitPrButton.disabled = false;
+        submitPrButton.textContent = 'Submit Request';
+        if (choicesInstance) choicesInstance.clearStore();
     };
 
-    // Hide the modal when the close button is clicked
     closeButton.addEventListener('click', closeModal);
-
-    // Hide the modal when clicking outside of it
     window.addEventListener('click', (event) => {
-        if (event.target === purchaseRequestModal) {
-            closeModal();
-        }
+        if (event.target === purchaseRequestModal) closeModal();
     });
 
-    // Function to convert file to Base64
-    const getBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
+    // ✅ NEXT button logic
+    proceedToQtyBtn.addEventListener('click', () => {
+        const selectedItems = choicesInstance.getValue(true); // array of selected strings
+
+        if (selectedItems.length === 0) {
+            showToast('Please select at least one item.', 'error');
+            return;
+        }
+
+        qtyFieldsContainer.innerHTML = '';
+        selectedItems.forEach(item => {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <label>${item}</label>
+                <input type="number" data-item="${item}" min="1" placeholder="Qty" required style="width: 100%; margin-bottom: 12px;" />
+            `;
+            qtyFieldsContainer.appendChild(div);
         });
-    };
 
-    // Handle form submission
+        qtySection.style.display = 'block';
+    });
+
+    // ✅ Final form submit logic
     purchaseRequestForm.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault();
 
-        // Show loading spinner and disable button
         prLoadingSpinner.style.display = 'block';
         submitPrButton.disabled = true;
         submitPrButton.textContent = 'Submitting...';
 
-        const dealerName = document.getElementById('dealer-name').value;
+        const dealerName = document.getElementById('dealer-name').value.trim();
         const priorityLevel = document.getElementById('priority-level').value;
-        const remarks = document.getElementById('remarks').value;
+        const remarks = document.getElementById('remarks').value.trim();
         const crmName = window.CRM_NAME;
         const requestDate = new Date().toLocaleString();
 
-        let fileDataBase64 = null;
-        if (requiredItemsFile.files.length > 0) {
-            try {
-                fileDataBase64 = await getBase64(requiredItemsFile.files[0]);
-            } catch (error) {
-                console.error('Error converting file to Base64:', error);
-                showToast('Failed to read file. Please try again.', 'error');
+        const qtyInputs = document.querySelectorAll('#qty-fields-container input');
+        let itemQtyMap = {};
+
+        for (const input of qtyInputs) {
+            const item = input.getAttribute('data-item');
+            const qty = input.value.trim();
+
+            if (!qty || isNaN(qty) || parseInt(qty) <= 0) {
+                showToast(`Enter valid quantity for ${item}`, 'error');
                 prLoadingSpinner.style.display = 'none';
                 submitPrButton.disabled = false;
                 submitPrButton.textContent = 'Submit Request';
-                return; // Stop submission if file conversion fails
+                return;
             }
-        } else {
-            showToast('Please attach the required items file.', 'error');
-            prLoadingSpinner.style.display = 'none';
-            submitPrButton.disabled = false;
-            submitPrButton.textContent = 'Submit Request';
-            return; // Stop submission if no file is attached
+
+            itemQtyMap[item] = parseInt(qty);
         }
 
         const formData = {
@@ -164,8 +153,7 @@ async function fetchItemListFromSheet() {
             'Remarks': remarks,
             'CRM Name': crmName,
             'Request Date': requestDate,
-            'Required Items File Data': fileDataBase64, // Include Base64 file data
-            'Required Items File Name': requiredItemsFile.files[0].name // Include file name
+            'Requested Items': itemQtyMap
         };
 
         const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbyffY1_V3ap0VOnFJ8tIPP5bR9_gy_cVQ8_WmLpu0Q6E_dzHOUDPbdXnP4Db5gXRyxl/exec';
@@ -173,23 +161,17 @@ async function fetchItemListFromSheet() {
         try {
             await fetch(googleAppsScriptUrl, {
                 method: 'POST',
-                mode: 'no-cors', // Use 'no-cors' for Google Apps Script to avoid CORS issues on client-side
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
 
-            // If fetch completes without network error, show success notification
             showToast('Purchase request sent!', 'success');
-            closeModal(); // Close the modal
+            closeModal();
 
         } catch (error) {
-            // This catches network errors (e.g., no internet, script URL typo)
             console.error('Error sending purchase request:', error);
             showToast('Failed to send request. Check connection.', 'error');
-            // Do not close modal on error, allow user to retry or inspect
-            // Re-enable button and hide spinner on error
             prLoadingSpinner.style.display = 'none';
             submitPrButton.disabled = false;
             submitPrButton.textContent = 'Submit Request';
