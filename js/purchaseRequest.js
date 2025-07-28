@@ -94,31 +94,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ✅ NEXT button logic
-    proceedToQtyBtn.addEventListener('click', () => {
-      const selectedOptions = choicesInstance.getValue(); // full objects with {value, label}
-    
-      if (!selectedOptions || selectedOptions.length === 0) {
-        showToast('Please select at least one item.', 'error');
-        return;
-      }
-    
-      qtyFieldsContainer.innerHTML = ''; // Clear previous fields
-    
-      selectedOptions.forEach(option => {
-        const item = option.value;
-        const safeItemId = item.replace(/\s+/g, '-').toLowerCase(); // Make a safe HTML ID
-    
-        const div = document.createElement('div');
-        div.classList.add('qty-input-pair');
-        div.innerHTML = `
-          <label for="qty-${safeItemId}">${item}</label>
-          <input type="number" id="qty-${safeItemId}" data-item="${item}" min="1" placeholder="Enter Quantity" required style="width:100%; margin-bottom:10px;" />
-        `;
-        qtyFieldsContainer.appendChild(div);
-      });
-    
-      qtySection.style.display = 'block';
-    });
+proceedToQtyBtn.addEventListener('click', () => {
+  const selectedOptions = choicesInstance.getValue(); // returns [{value:..., label:...}]
+
+  if (!selectedOptions || selectedOptions.length === 0) {
+    showToast('Please select at least one item.', 'error');
+    return;
+  }
+
+  qtyFieldsContainer.innerHTML = ''; // Clear previous inputs
+
+  selectedOptions.forEach(option => {
+    const item = option.value?.trim();
+    if (!item) return; // Skip if empty
+
+    const safeId = item.replace(/\W+/g, '-').toLowerCase();
+
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <label for="qty-${safeId}">${item}</label>
+      <input type="number" id="qty-${safeId}" data-item="${item}" placeholder="Quantity" min="1" style="width: 100%; margin-bottom: 10px;" required />
+    `;
+    qtyFieldsContainer.appendChild(div);
+  });
+
+  qtySection.style.display = 'block';
+});
 
     // ✅ Final form submit logic
     purchaseRequestForm.addEventListener('submit', async (event) => {
