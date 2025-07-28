@@ -75,15 +75,17 @@
         <label for="dealer-name">Dealer Name:</label>
         <input type="text" id="dealer-name" name="Dealer Name" required>
 
-        <!-- Removed Product Name and Quantity fields -->
-        <!-- <label for="product-name">Product Name:</label>
-        <textarea id="product-name" name="Product Name" rows="3" required></textarea>
+        <!-- STEP 1: Select Items -->
+        <label for="item-selector">Select Required Items:</label>
+        <select id="item-selector" multiple required></select>
+        <button type="button" id="proceed-to-qty-btn">Next</button>
+        
+        <!-- STEP 2: Quantity Entry - initially hidden -->
+        <div id="qty-input-section" style="display:none;">
+          <h4>Enter Quantity for Each Item:</h4>
+          <div id="qty-fields-container"></div>
+        </div>
 
-        <label for="quantity">Quantity:</label>
-        <input type="text" id="quantity" name="Qty" required> -->
-
-        <label for="required-items-file">Required Items (File Attachment):</label>
-        <input type="file" id="required-items-file" name="Required Items File" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png" required>
 
         <label for="priority-level">Priority Level:</label>
         <select id="priority-level" name="Priority Level" required>
