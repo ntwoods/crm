@@ -10,17 +10,21 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchItemListFromSheet(); // Load item dropdown from IMS sheet
     
 async function fetchItemListFromSheet() {
-  const sheetId = '1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0';
-  const sheetName = 'IMS';
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}!C3:C?key=YOUR_API_KEY`; // Replace with your actual API key
+  const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
 
   try {
     const response = await fetch(url);
-    const data = await response.json();
-    const items = data.values.flat();
+    const csvText = await response.text();
+
+    // Parse CSV and get only Column C (starting from Row 3)
+    const rows = csvText.split('\n').slice(2); // skip header and first row
+    const items = rows
+      .map(row => row.split(',')[2]) // column C (0-indexed)
+      .filter(item => item && item.trim() !== '');
 
     const selector = document.getElementById('item-selector');
-    selector.innerHTML = ""; // Clear existing
+    selector.innerHTML = "";
+
     items.forEach(item => {
       const opt = document.createElement('option');
       opt.value = item;
@@ -28,11 +32,28 @@ async function fetchItemListFromSheet() {
       selector.appendChild(opt);
     });
 
+    initChoicesDropdown(); // activate Choices.js
+
   } catch (error) {
     console.error('Failed to fetch item list:', error);
     showToast('Failed to load item list.', 'error');
   }
 }
+
+        let choicesInstance = null;
+        
+        function initChoicesDropdown() {
+            const selectEl = document.getElementById('item-selector');
+            if (choicesInstance) choicesInstance.destroy(); // Avoid duplicates
+            choicesInstance = new Choices(selectEl, {
+                removeItemButton: true,
+                searchEnabled: true,
+                placeholderValue: 'Search and select items',
+                noResultsText: 'No items found',
+                itemSelectText: '',
+                maxItemCount: 50 // Optional: set a max if needed
+            });
+        }
     
     // Function to show a toast notification
 
