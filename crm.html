@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <title>NT Woods CRM – Unified Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+       <!-- Choices.js CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  
+  <!-- Choices.js JS -->
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
   <link rel="stylesheet" href="css/styles.css" />
   <script src="js/reload.js" defer></script>
@@ -75,16 +80,18 @@
         <label for="dealer-name">Dealer Name:</label>
         <input type="text" id="dealer-name" name="Dealer Name" required>
 
-        <!-- STEP 1: Select Items -->
-        <label for="item-selector">Select Required Items:</label>
-        <select id="item-selector" multiple required></select>
-        <button type="button" id="proceed-to-qty-btn">Next</button>
-        
-        <!-- STEP 2: Quantity Entry - initially hidden -->
-        <div id="qty-input-section" style="display:none;">
-          <h4>Enter Quantity for Each Item:</h4>
-          <div id="qty-fields-container"></div>
-        </div>
+      <!-- STEP 1: Select Items -->
+      <label for="item-selector">Select Required Items:</label>
+      <select id="item-selector" multiple required></select>
+      
+      <button type="button" id="proceed-to-qty-btn" style="margin-top: 10px; padding: 8px 16px;">Next</button>
+      
+      <!-- STEP 2: Quantity Entry - initially hidden -->
+      <div id="qty-input-section" style="display:none; margin-top: 15px;">
+        <h4>Enter Quantity for Each Item:</h4>
+        <div id="qty-fields-container"></div>
+      </div>
+
 
 
         <label for="priority-level">Priority Level:</label>
