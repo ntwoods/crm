@@ -50,96 +50,23 @@
 <body>
   <div class="dashboard-container">
     <a id="additional-order-link" class="additional-order-btn" href="#">Additional Order</a>
-    <a id="purchase-request-link" class="additional-order-btn" href="#">View Purchase Req.</a>
+    <a id="purchase-request-link" class="additional-order-btn" href="#">View Purchase Req.</a>    
     <button id="raise-purchase-request-btn" class="additional-order-btn">Raise Purchase Request</button>
 
     <div class="header">
       <div class="logo-wrapper">
-        <img src="assets/ntwoodsimg.jpg" class="logo-img" alt="NT Woods Logo" />
+        <img src="assets/ntwoodsimg.jpg" class="logo-img" alt="NT Logo" />
       </div>
       <div class="header-text">
-        <h1 class="company-name">NT Woods</h1>
-        <p>Unified CRM Portal</p>
+        <h1 class="company-name">NT Woods Pvt. Ltd.</h1>
+        <p id="crm-tagline">Loading...</p>
       </div>
     </div>
 
-    <!-- Workflow Cards Section (existing content) -->
-    <div class="workflow-container">
-      <!-- Card 1: On Hold -->
-      <div class="workflow-card pending-highlight-red" data-status="On Hold">
-        <div class="card-icon"><i class="fas fa-pause-circle"></i></div>
-        <h3>On Hold</h3>
-        <p>Requests pending further action.</p>
-        <div class="card-count">Total: <span id="on-hold-count">0</span></div>
-        <div class="card-tag">Immediate attention needed</div>
+    <div class="workflow-container" id="workflow-container">
       </div>
-
-      <!-- Card 2: Level 1 Approval -->
-      <div class="workflow-card" data-status="Level 1 Approval">
-        <div class="card-icon"><i class="fas fa-user-check"></i></div>
-        <h3>Level 1 Approval</h3>
-        <p>Awaiting initial review.</p>
-        <div class="card-count">Total: <span id="level-1-count">0</span></div>
-        <div class="card-tag">First stage review</div>
-      </div>
-
-      <!-- Card 3: Level 2 Approval -->
-      <div class="workflow-card" data-status="Level 2 Approval">
-        <div class="card-icon"><i class="fas fa-user-shield"></i></div>
-        <h3>Level 2 Approval</h3>
-        <p>Awaiting secondary review.</p>
-        <div class="card-count">Total: <span id="level-2-count">0</span></div>
-        <div class="card-tag">Intermediate review</div>
-      </div>
-
-      <!-- Card 4: Owner Approval -->
-      <div class="workflow-card" data-status="Owner Approval">
-        <div class="card-icon"><i class="fas fa-user-tie"></i></div>
-        <h3>Owner Approval</h3>
-        <p>Awaiting final owner sign-off.</p>
-        <div class="card-count">Total: <span id="owner-approval-count">0</span></div>
-        <div class="card-tag">Critical approval</div>
-      </div>
-
-      <!-- Card 5: Level 3 Approval -->
-      <div class="workflow-card" data-status="Level 3 Approval">
-        <div class="card-icon"><i class="fas fa-user-plus"></i></div>
-        <h3>Level 3 Approval</h3>
-        <p>Awaiting higher-level review.</p>
-        <div class="card-count">Total: <span id="level-3-count">0</span></div>
-        <div class="card-tag">Advanced review</div>
-      </div>
-
-      <!-- Card 6: Level 4 Approval -->
-      <div class="workflow-card" data-status="Level 4 Approval">
-        <div class="card-icon"><i class="fas fa-users-cog"></i></div>
-        <h3>Level 4 Approval</h3>
-        <p>Awaiting departmental approval.</p>
-        <div class="card-count">Total: <span id="level-4-count">0</span></div>
-        <div class="card-tag">Departmental review</div>
-      </div>
-
-      <!-- Card 7: Level 5 Approval -->
-      <div class="workflow-card" data-status="Level 5 Approval">
-        <div class="card-icon"><i class="fas fa-gavel"></i></div>
-        <h3>Level 5 Approval</h3>
-        <p>Awaiting executive decision.</p>
-        <div class="card-count">Total: <span id="level-5-count">0</span></div>
-        <div class="card-tag">Executive decision</div>
-      </div>
-
-      <!-- Card 8: All Clear -->
-      <div class="workflow-card all-clear-highlight-green" data-status="All Clear">
-        <div class="card-icon"><i class="fas fa-check-circle"></i></div>
-        <h3>All Clear</h3>
-        <p>Requests that have been approved.</p>
-        <div class="card-count">Total: <span id="all-clear-count">0</span></div>
-        <div class="card-tag">Ready for processing</div>
-      </div>
-    </div>
   </div>
 
-  <!-- Purchase Request Modal -->
   <div id="purchase-request-modal" class="modal">
     <div class="modal-content">
       <span class="close-button">&times;</span>
@@ -148,17 +75,15 @@
         <label for="dealer-name">Dealer Name:</label>
         <input type="text" id="dealer-name" name="Dealer Name" required>
 
-        <!-- New dynamic item selection section -->
-        <label for="item-search-input">Search & Select Items:</label>
-        <div class="item-selection-container">
-          <input type="text" id="item-search-input" placeholder="Search for items..." autocomplete="off">
-          <div id="item-search-results" class="item-search-results"></div>
-          <button type="button" id="add-selected-items-btn" class="add-items-btn">Add Selected Items</button>
-        </div>
+        <!-- Removed Product Name and Quantity fields -->
+        <!-- <label for="product-name">Product Name:</label>
+        <textarea id="product-name" name="Product Name" rows="3" required></textarea>
 
-        <div id="selected-items-display" class="selected-items-display">
-          <!-- Selected items with quantity inputs will be dynamically added here -->
-        </div>
+        <label for="quantity">Quantity:</label>
+        <input type="text" id="quantity" name="Qty" required> -->
+
+        <label for="required-items-file">Required Items (File Attachment):</label>
+        <input type="file" id="required-items-file" name="Required Items File" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png" required>
 
         <label for="priority-level">Priority Level:</label>
         <select id="priority-level" name="Priority Level" required>
@@ -179,7 +104,7 @@
   <div id="toast-container"></div>
 
   <script src="js/generateTiles.js" defer></script>
+  <script src="js/dashboard.js" defer></script>
   <script src="js/purchaseRequest.js" defer></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
