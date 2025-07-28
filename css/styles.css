@@ -1,4 +1,4 @@
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
 
         * {
             margin: 0;
@@ -231,333 +231,180 @@
         }
         .workflow-card:nth-child(8) .card-icon { /* Level 5 */
             background: linear-gradient(135deg, #7f8c8d, #34495e);
-        }        
-
+        }
         .workflow-card:hover .card-icon {
             transform: rotate(8deg) scale(1.05); /* Subtler rotate/scale */
         }
-/* Styles for the modal */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1000; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  padding-top: 60px; /* Location of the box */
-}
 
-.modal-content {
-  background-color: #fefefe;
-  margin: 5% auto; /* 5% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-  max-width: 500px; /* Max width for larger screens */
-  border-radius: 8px;
-  position: relative;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-  animation-name: animatetop;
-  animation-duration: 0.4s
-}
-
-/* Add Animation */
-@keyframes animatetop {
-  from {top: -300px; opacity: 0}
-  to {top: 0; opacity: 1}
-}
-
-.close-button {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close-button:hover,
-.close-button:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-/* Form styles within the modal */
-.modal-content form label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-.modal-content form input[type="text"],
-.modal-content form textarea,
-.modal-content form select {
-  width: calc(100% - 20px); /* Account for padding */
-  padding: 8px 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.modal-content form button[type="submit"] {
-  background-color: #28a745; /* Green submit button */
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 10px;
-  transition: background-color 0.3s ease;
-}
-
-.modal-content form button[type="submit"]:hover {
-  background-color: #218838;
-}
-
-        .card-icon svg {
-            width: 28px; /* Slightly smaller icon */
-            height: 28px;
-            color: white;
+        /* Styles for the modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px; /* Location of the box */
         }
 
-        .card-title {
-            font-size: 1.25rem; /* Adjusted font size */
-            font-weight: 700;
-            color: #2c3e50; /* Darker title text */
-            margin-bottom: 8px; /* Reduced margin */
-            line-height: 1.2;
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 5% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px; /* Max width for larger screens */
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation: fadeIn 0.5s;
         }
 
-        .card-description {
-            color: #555; /* Muted description text */
-            font-size: 0.9rem; /* Slightly smaller description */
-            line-height: 1.4;
-            margin-bottom: 15px; /* Reduced margin */
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
         }
 
-        .card-level {
-            display: inline-block;
-            background: rgba(0, 0, 0, 0.08); /* More subtle tag background */
-            color: #444; /* Darker tag text */
-            padding: 5px 10px; /* Reduced padding */
-            border-radius: 15px;
-            font-size: 0.7rem; /* Smaller font size */
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Form styles within modal */
+        #purchase-request-form label {
+            display: block;
+            margin-bottom: 8px;
+            margin-top: 15px;
             font-weight: 600;
-            margin-bottom: 10px; /* Reduced margin */
+            color: #333;
         }
 
-        .card-arrow {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 35px; /* Smaller arrow button */
-            height: 35px;
-            background: rgba(0, 0, 0, 0.08); /* More subtle background */
+        #purchase-request-form input[type="text"],
+        #purchase-request-form select,
+        #purchase-request-form textarea {
+            width: calc(100% - 20px); /* Adjust for padding */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        #purchase-request-form textarea {
+            resize: vertical; /* Allow vertical resize */
+            min-height: 80px;
+        }
+
+        #purchase-request-form button[type="submit"] {
+            background-color: #28a745; /* Green submit button */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #purchase-request-form button[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        /* Loading spinner styles */
+        .loading-spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3498db; /* Blue */
             border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+            display: none; /* Hidden by default */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast Notification styles */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1001; /* Above modal */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none; /* Allow clicks to pass through */
+        }
+
+        .toast {
+            background-color: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
+            min-width: 250px;
             justify-content: center;
-            transition: all 0.3s ease;
+            pointer-events: auto; /* Re-enable pointer events for the toast itself */
         }
 
-        .workflow-card:hover .card-arrow {
-            background: rgba(0, 0, 0, 0.15); /* Slightly darker on hover */
-            transform: translateX(3px);
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .card-arrow svg {
-            width: 18px; /* Smaller arrow icon */
-            height: 18px;
-            color: #555; /* Darker arrow color */
+        .toast.success {
+            background-color: #28a745;
         }
 
-        /* Pulse animation for pending items only */
-        .pending-highlight-red.pulse-animation {
-            animation: pulse 2s infinite, fadeInUp 0.8s ease-out forwards;
+        .toast.error {
+            background-color: #dc3545;
         }
 
-        /* No pulse for all clear items */
-        .all-clear-highlight-green {
-            animation: fadeInUp 0.8s ease-out forwards; /* Only fade in */
+        .toast.info {
+            background-color: #17a2b8;
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        .toast.success::before {
+            content: '✔️'; /* Checkmark emoji */
+            margin-right: 10px;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .toast.error::before {
+            content: '❌'; /* Cross emoji */
+            margin-right: 10px;
         }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .toast.info::before {
+            content: 'ℹ️'; /* Info emoji */
+            margin-right: 10px;
         }
 
-        /* Floating elements (keep them subtle) */
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            opacity: 0.5; /* More subtle */
+        /* Make the toast container cover the whole screen while showing, but allow pointer events to pass through */
+        #toast-container.active {
+            pointer-events: auto; /* Re-enable pointer events if you want interaction, but typically for toasts, you want pass-through */
         }
-
-        .floating-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(175, 195, 220, 0.2); /* Adjusted color to match new theme */
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .floating-circle:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 15%;
-            left: 5%;
-            animation-delay: 0s;
-        }
-
-        .floating-circle:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 55%;
-            right: 10%;
-            animation-delay: 2s;
-        }
-
-        .floating-circle:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            bottom: 10%;
-            left: 15%;
-            animation-delay: 4s;
-        }
-        .floating-circle:nth-child(4) {
-            width: 100px;
-            height: 100px;
-            top: 30%;
-            right: 25%;
-            animation-delay: 1s;
-        }
-        .floating-circle:nth-child(5) {
-            width: 70px;
-            height: 70px;
-            bottom: 30%;
-            right: 5%;
-            animation-delay: 3s;
-        }
-/* ... (existing CSS) ... */
-
-/* Styles for the loading spinner */
-.loading-spinner {
-  border: 4px solid #f3f3f3; /* Light grey */
-  border-top: 4px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-  display: none; /* Hidden by default */
-  margin: 10px auto; /* Center it below the button */
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Styles for the Toast Notifications */
-/* ... (existing CSS for .loading-spinner, etc.) ... */
-
-/* Styles for the Toast Notifications - MODIFIED FOR CENTER */
-#toast-container {
-  position: fixed;
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Adjust for its own size */
-  z-index: 1001; /* Above modal */
-  display: flex; /* Use flexbox to center content */
-  align-items: center; /* Center items vertically in flex container */
-  justify-content: center; /* Center items horizontally in flex container */
-  pointer-events: none; /* Allows clicks to pass through to elements behind it */
-  width: 100%; /* Take full width to help with centering */
-  height: 100%; /* Take full height to help with centering */
-  overflow: hidden; /* Hide overflow if toast is too large */
-}
-
-.toast {
-  background-color: #333;
-  color: #fff;
-  padding: 25px 40px; /* Larger padding for a bolder look */
-  border-radius: 10px; /* Slightly more rounded corners */
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-  transform: translateY(20px) scale(0.9); /* Start slightly scaled down and off-center */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* More prominent shadow */
-  min-width: 300px; /* Wider toast */
-  text-align: center; /* Center the text */
-  font-size: 1.2em; /* Larger font size */
-  font-weight: bold; /* Make text bolder */
-  display: flex; /* Flexbox for internal content alignment */
-  align-items: center;
-  justify-content: center;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translateY(0) scale(1); /* Return to original size and position */
-}
-
-.toast.success {
-  background-color: #28a745; /* Green for success */
-}
-
-.toast.error {
-  background-color: #dc3545; /* Red for error */
-}
-
-.toast.info {
-  background-color: #17a2b8; /* Blue for info */
-}
-
-/* Optional: Add a subtle icon or emoji for better visual appeal based on type */
-.toast.success::before {
-    content: '✔️'; /* Checkmark emoji */
-    margin-right: 10px;
-}
-
-.toast.error::before {
-    content: '❌'; /* Cross emoji */
-    margin-right: 10px;
-}
-
-.toast.info::before {
-    content: 'ℹ️'; /* Info emoji */
-    margin-right: 10px;
-}
-
-/* Make the toast container cover the whole screen while showing, but allow pointer events to pass through */
-#toast-container.active {
-    pointer-events: auto; /* Re-enable pointer events if you want interaction, but typically for toasts, you want pass-through */
-}
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-15px) rotate(180deg); } /* Reduced float distance */
@@ -586,10 +433,139 @@
                 padding: 20px;
                 min-height: unset; /* Allow height to adjust */
             }
-            .card-title {
-                font-size: 1.15rem;
+
+            .modal-content {
+                width: 95%;
+                margin: 20px auto;
             }
-            .card-description {
-                font-size: 0.85rem;
-            }
+        }
+
+        /* New styles for item selection */
+        .item-selection-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        #item-search-input {
+            width: 100%;
+            padding-right: 40px; /* Space for clear button */
+            box-sizing: border-box;
+        }
+
+        .item-search-results {
+            position: absolute;
+            top: 100%; /* Position below the input */
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10; /* Ensure it's above other elements */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none; /* Hidden by default */
+        }
+
+        .item-search-results.show {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-result-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .search-result-item.selected {
+            background-color: #e0eafc; /* Light blue to indicate selection */
+            font-weight: 600;
+        }
+
+        .search-result-item .select-icon {
+            color: #28a745;
+            font-size: 1.2em;
+            display: none; /* Hidden by default */
+        }
+
+        .search-result-item.selected .select-icon {
+            display: inline-block; /* Show when selected */
+        }
+
+        .add-items-btn {
+            background-color: #007bff; /* Blue for add button */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            width: 100%; /* Full width */
+            box-sizing: border-box;
+        }
+
+        .add-items-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .selected-items-display {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+            max-height: 250px;
+            overflow-y: auto;
+            display: none; /* Hidden until items are added */
+        }
+
+        .selected-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .selected-item-row:last-child {
+            border-bottom: none;
+        }
+
+        .selected-item-name {
+            flex-grow: 1;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .selected-item-qty-input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            text-align: center;
+            margin-left: 10px;
+        }
+
+        .remove-item-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 10px;
+            padding: 0 5px;
+            transition: color 0.2s ease;
+        }
+
+        .remove-item-btn:hover {
+            color: #c82333;
         }
