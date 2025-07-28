@@ -7,9 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitPrButton = document.getElementById('submit-pr-button'); // Get the submit button
     const prLoadingSpinner = document.getElementById('pr-loading-spinner'); // Get the spinner
     const requiredItemsFile = document.getElementById('required-items-file'); // Get the new file input
-
-
-
+    fetchItemListFromSheet(); // Load item dropdown from IMS sheet
+    
 async function fetchItemListFromSheet() {
   const sheetId = '1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0';
   const sheetName = 'IMS';
