@@ -8,7 +8,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const prLoadingSpinner = document.getElementById('pr-loading-spinner'); // Get the spinner
     const requiredItemsFile = document.getElementById('required-items-file'); // Get the new file input
 
+
+
+async function fetchItemListFromSheet() {
+  const sheetId = '1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0';
+  const sheetName = 'IMS';
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}!C3:C?key=YOUR_API_KEY`; // Replace with your actual API key
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    const items = data.values.flat();
+
+    const selector = document.getElementById('item-selector');
+    selector.innerHTML = ""; // Clear existing
+    items.forEach(item => {
+      const opt = document.createElement('option');
+      opt.value = item;
+      opt.textContent = item;
+      selector.appendChild(opt);
+    });
+
+  } catch (error) {
+    console.error('Failed to fetch item list:', error);
+    showToast('Failed to load item list.', 'error');
+  }
+}
+    
     // Function to show a toast notification
+
     function showToast(message, type = 'info', duration = 3000) {
         const toastContainer = document.getElementById('toast-container');
         if (!toastContainer) { // Safety check
