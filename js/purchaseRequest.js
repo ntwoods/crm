@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const proceedToQtyBtn = document.getElementById('proceed-to-qty-btn');
     const qtySection = document.getElementById('qty-input-section');
     const qtyFieldsContainer = document.getElementById('qty-fields-container');
+    const addCustomItemBtn = document.getElementById('add-custom-item-btn'); // Get the new button
+
 
     let choicesInstance = null;
 
@@ -19,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(url);
             const csvText = await response.text();
             const rows = csvText.split('\n').slice(2); // skip headers
-            const items = rows.map(row => row.split(',')[2]).filter(item => item && item.trim() !== ''); //
+            const items = rows.map(row => row.split(',')[2]).filter(item => item && item.trim() !== '');
 
             const selector = document.getElementById('item-selector');
             selector.innerHTML = '';
@@ -45,52 +47,35 @@ document.addEventListener('DOMContentLoaded', () => {
         choicesInstance = new Choices(selectEl, {
             removeItemButton: true,
             searchEnabled: true,
-            placeholderValue: 'Search and select or type to add new items', // More descriptive
-            noResultsText: 'No results found', //
-            noChoicesText: 'No choices to choose from', //
+            placeholderValue: 'Search and select items or type a new one', // Adjusted placeholder
+            noResultsText: 'Type to add as a new item.', // Adjusted no results text
             itemSelectText: '',
             maxItemCount: 100,
-            allowHTML: false, // Recommended for security
-            // Crucially, enable the 'create new items' functionality
-            // When user types something not in the list and presses Enter/Tab
-            addItemFilter: function(value) { //
-                return value ? value.trim().length > 0 : false;
-            },
-            duplicateItemsAllowed: false, // Prevent adding the same item twice
-            fuseOptions: { // Improves search results, good for dynamic adding
-                includeScore: true
-            },
-            callbackOnCreateTemplates: function(template) { //
-                // This template helps Choices.js display custom messages for new items
-                var classNames = this.config.classNames;
-                return {
-                    noResults: function(data) {
-                        return template(`
-                            <div class="${classNames.noResults}">${data.searchText ? `No results found for "${data.searchText}". Press Enter to add.` : 'Start typing to add a new item.'}</div>
-                        `);
-                    },
-                    noChoices: function() {
-                        return template(`
-                            <div class="${classNames.noChoices}">No items to choose from.</div>
-                        `);
-                    },
-                };
-            },
-        });
-
-        // Event listener to explicitly add item on Enter if not already added by Choices.js internal mechanism
-        // This is a fallback/reinforcement
-        selectEl.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                const inputElement = choicesInstance.input.element;
-                const inputValue = inputElement.value.trim();
-                if (inputValue && !choicesInstance.itemList.some(item => item.value === inputValue)) { // Check if not already in list
-                    choicesInstance.setChoices([{ value: inputValue, label: inputValue, selected: true }], 'value', 'label', true);
-                    inputElement.value = ''; // Clear input after adding
-                }
-            }
+            allowHTML: false,
+            // crucial configuration for allowing new items
+            createTag: true, // This enables creation of new items
+            // We'll manually add the item from the input using the button click
+            // So we don't need addItemFilter or callbackOnCreateTemplates for this specific approach
         });
     }
+
+    // Event listener for the new "Add Custom Item" button
+    addCustomItemBtn.addEventListener('click', () => {
+        const customItemInput = choicesInstance.input.element.value.trim();
+        if (customItemInput) {
+            // Check if the item already exists to avoid duplicates
+            const currentItems = choicesInstance.getValue(true); // true returns just values
+            if (!currentItems.includes(customItemInput)) {
+                choicesInstance.setChoices([{ value: customItemInput, label: customItemInput, selected: true }], 'value', 'label', true);
+                choicesInstance.input.element.value = ''; // Clear the input field
+                showToast(`'${customItemInput}' added as a custom item.`, 'success');
+            } else {
+                showToast(`'${customItemInput}' is already selected.`, 'info');
+            }
+        } else {
+            showToast('Please type a custom item name to add.', 'error');
+        }
+    });
 
     // Toast message
     function showToast(message, type = 'info', duration = 3000) {
