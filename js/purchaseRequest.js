@@ -38,19 +38,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function initChoicesDropdown() {
-        const selectEl = document.getElementById('item-selector');
-        if (choicesInstance) choicesInstance.destroy();
+function initChoicesDropdown() {
+    const selectEl = document.getElementById('item-selector');
+    if (choicesInstance) choicesInstance.destroy();
 
-        choicesInstance = new Choices(selectEl, {
-            removeItemButton: true,
-            searchEnabled: true,
-            placeholderValue: 'Search and select items',
-            noResultsText: 'No items found',
-            itemSelectText: '',
-            maxItemCount: 100
-        });
-    }
+    choicesInstance = new Choices(selectEl, {
+        removeItemButton: true,
+        searchEnabled: true,
+        placeholderValue: 'Search and select items',
+        noResultsText: 'Press Enter to add: ',
+        itemSelectText: '',
+        duplicateItemsAllowed: false,
+        maxItemCount: 100,
+        addItemFilter: (value) => value && value.trim().length > 0
+    });
+
+    // Handle custom item add when Enter is pressed
+    selectEl.parentElement.querySelector('.choices__input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            const inputValue = e.target.value.trim();
+            if (!inputValue) return;
+
+            const existing = choicesInstance.getValue(true);
+            if (existing.includes(inputValue)) return;
+
+            choicesInstance.setChoiceByValue(inputValue); // Prevent duplicates
+            choicesInstance._addItem({ value: inputValue, label: inputValue, customProperties: { custom: true } });
+            e.target.value = '';
+        }
+    });
+}
 
     // Toast message
     function showToast(message, type = 'info', duration = 3000) {
