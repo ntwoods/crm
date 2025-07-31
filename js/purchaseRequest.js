@@ -13,68 +13,68 @@ document.addEventListener('DOMContentLoaded', () => {
     let choicesInstance = null;
 
     // Load items and initialize dropdown
-    async function fetchItemListFromSheet() {
-        const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
-        try {
-            const response = await fetch(url);
-            const csvText = await response.text();
-            const rows = csvText.split('\n').slice(2); // skip headers
-            const items = rows.map(row => row.split(',')[2]).filter(item => item && item.trim() !== '');
+// Fetch and initialize dropdown from sheet
+async function fetchItemListFromSheet() {
+    const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
+    try {
+        const response = await fetch(url);
+        const csvText = await response.text();
+        const rows = csvText.split('\n').slice(2); // skip headers
+        const items = rows
+            .map(row => row.split(',')[2])
+            .filter(item => item && item.trim() !== '')
+            .map(item => ({ value: item.trim(), label: item.trim() }));
 
-            const selector = document.getElementById('item-selector');
-            selector.innerHTML = '';
-
-            items.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item;
-                opt.textContent = item;
-                selector.appendChild(opt);
-            });
-
-            initChoicesDropdown();
-        } catch (error) {
-            console.error('Failed to fetch item list:', error);
-            showToast('Failed to load item list.', 'error');
-        }
+        initChoicesDropdown(items);
+    } catch (error) {
+        console.error('Failed to fetch item list:', error);
+        showToast('Failed to load item list.', 'error');
     }
+}
 
-    function initChoicesDropdown() {
-      const selectEl = document.getElementById('item-selector');
-      if (choicesInstance) choicesInstance.destroy();
-    
-      choicesInstance = new Choices(selectEl, {
+// Initialize Choices dropdown with dynamic + free entry support
+function initChoicesDropdown(itemsArray) {
+    const selectEl = document.getElementById('item-selector');
+    if (choicesInstance) choicesInstance.destroy();
+
+    choicesInstance = new Choices(selectEl, {
         removeItemButton: true,
         searchEnabled: true,
         placeholderValue: 'Search and select items',
-        noResultsText: 'No results found',
-        itemSelectText: '',
+        noResultsText: (value) => `Press Enter to add: "${value}"`,
         duplicateItemsAllowed: false,
-        shouldSort: false,
+        shouldSort: true,
+        paste: false,
         addItems: true,
-        paste: false
-      });
-    
-      const inputWatcher = setInterval(() => {
+        addItemFilter: (value) => value.trim().length > 0,
+        addItemText: (value) => `Press Enter to add: "${value}"`,
+    });
+
+    // Now populate items
+    choicesInstance.setChoices(itemsArray, 'value', 'label', true);
+
+    // Watch for free-text "Enter" to add custom item
+    const inputWatcher = setInterval(() => {
         const inputField = document.querySelector('.choices__input');
         if (!inputField) return;
-    
-        clearInterval(inputWatcher); // once found, clear interval
-    
+
+        clearInterval(inputWatcher);
+
         inputField.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            const newItem = inputField.value.trim();
-            if (!newItem) return;
-    
-            const existingItems = choicesInstance.getValue(true);
-            if (!existingItems.includes(newItem)) {
-              choicesInstance.setValue([{ value: newItem, label: newItem }]);
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const newItem = inputField.value.trim();
+                if (!newItem) return;
+
+                const existingItems = choicesInstance.getValue(true);
+                if (!existingItems.includes(newItem)) {
+                    choicesInstance.setValue([{ value: newItem, label: newItem }]);
+                }
+                inputField.value = '';
             }
-            inputField.value = '';
-          }
         });
-      }, 200);
-    }
+    }, 100);
+}
 
     // Toast message
     function showToast(message, type = 'info', duration = 3000) {
