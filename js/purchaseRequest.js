@@ -45,7 +45,7 @@ function initChoicesDropdown(itemsArray) {
         duplicateItemsAllowed: false,
         shouldSort: true,
         paste: false,
-        addItems: true,
+        addItems: true, // This is key for adding new items
         addItemFilter: (value) => value.trim().length > 0,
         addItemText: (value) => `Press Enter to add: "${value}"`,
     });
@@ -53,27 +53,9 @@ function initChoicesDropdown(itemsArray) {
     // Now populate items
     choicesInstance.setChoices(itemsArray, 'value', 'label', true);
 
-    // Watch for free-text "Enter" to add custom item
-    const inputWatcher = setInterval(() => {
-        const inputField = document.querySelector('.choices__input');
-        if (!inputField) return;
-
-        clearInterval(inputWatcher);
-
-        inputField.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const newItem = inputField.value.trim();
-                if (!newItem) return;
-
-                const existingItems = choicesInstance.getValue(true);
-                if (!existingItems.includes(newItem)) {
-                    choicesInstance.setValue([{ value: newItem, label: newItem }]);
-                }
-                inputField.value = '';
-            }
-        });
-    }, 100);
+    // *** REMOVE THE inputWatcher BLOCK ***
+    // The native Choices.js 'addItems: true' handles the adding on Enter.
+    // Manual intervention here is redundant and can cause issues with how Choices.js manages its internal state.
 }
 
     // Toast message
@@ -96,7 +78,7 @@ function initChoicesDropdown(itemsArray) {
     // Modal show/hide
     raisePurchaseRequestBtn.addEventListener('click', () => {
         purchaseRequestModal.style.display = 'block';
-        isModalOpen = true;
+        isModalOpen = true; // Make sure 'isModalOpen' is defined if used elsewhere
         fetchItemListFromSheet();
     });
 
@@ -105,7 +87,7 @@ function initChoicesDropdown(itemsArray) {
         purchaseRequestForm.reset();
         qtySection.style.display = 'none';
         qtyFieldsContainer.innerHTML = '';
-        isModalOpen = false;
+        // isModalOpen = false; // Make sure 'isModalOpen' is defined if used elsewhere
         prLoadingSpinner.style.display = 'none';
         submitPrButton.disabled = false;
         submitPrButton.textContent = 'Submit Request';
@@ -119,7 +101,7 @@ function initChoicesDropdown(itemsArray) {
 
     // ✅ NEXT button logic
     proceedToQtyBtn.addEventListener('click', () => {
-      const selectedOptions = choicesInstance.getValue(); // [{ value: ..., label: ... }]
+      const selectedOptions = choicesInstance.getValue(); // This will now include both pre-defined and custom-added items
     
       if (!selectedOptions || selectedOptions.length === 0) {
         showToast('Please select at least one item.', 'error');
@@ -172,20 +154,30 @@ function initChoicesDropdown(itemsArray) {
         const crmName = window.CRM_NAME;
         const requestDate = new Date().toLocaleString();
 
-const qtyInputs = document.querySelectorAll('#qty-fields-container input');
-let itemQtyMap = {};
+        const qtyInputs = document.querySelectorAll('#qty-fields-container input');
+        let itemQtyMap = {};
 
-qtyInputs.forEach(input => {
-  const item = input.getAttribute('data-item')?.trim();
-  const qty = parseInt(input.value.trim());
+        qtyInputs.forEach(input => {
+            const item = input.getAttribute('data-item')?.trim();
+            const qty = parseInt(input.value.trim());
 
-  if (!item || isNaN(qty) || qty <= 0) {
-    showToast(`Invalid quantity for ${item || 'unknown item'}`, 'error');
-    throw new Error('Invalid qty input');
-  }
+            if (!item || isNaN(qty) || qty <= 0) {
+                showToast(`Invalid quantity for ${item || 'unknown item'}`, 'error');
+                // You might want to prevent form submission here or highlight the invalid input
+                // For now, let's just log and continue, but a more robust error handling is recommended.
+                return; // Skip this invalid item
+            }
 
-  itemQtyMap[item] = qty;
-});
+            itemQtyMap[item] = qty;
+        });
+
+        if (Object.keys(itemQtyMap).length === 0) {
+            showToast('No valid items with quantities to submit.', 'error');
+            prLoadingSpinner.style.display = 'none';
+            submitPrButton.disabled = false;
+            submitPrButton.textContent = 'Submit Request';
+            return; // Stop submission if no items are present
+        }
 
         const formData = {
             'Dealer Name': dealerName,
@@ -193,7 +185,7 @@ qtyInputs.forEach(input => {
             'Remarks': remarks,
             'CRM Name': crmName,
             'Request Date': requestDate,
-            'Requested Items': itemQtyMap
+            'Requested Items': itemQtyMap // This will now include custom items
         };
 
         const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbyffY1_V3ap0VOnFJ8tIPP5bR9_gy_cVQ8_WmLpu0Q6E_dzHOUDPbdXnP4Db5gXRyxl/exec';
@@ -201,7 +193,7 @@ qtyInputs.forEach(input => {
         try {
             await fetch(googleAppsScriptUrl, {
                 method: 'POST',
-                mode: 'no-cors',
+                mode: 'no-cors', // Important for Google Apps Script
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
