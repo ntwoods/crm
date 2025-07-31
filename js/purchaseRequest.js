@@ -46,37 +46,34 @@ document.addEventListener('DOMContentLoaded', () => {
         removeItemButton: true,
         searchEnabled: true,
         placeholderValue: 'Search and select items',
-        noResultsText: (searchValue) => `Press Enter to add: "${searchValue}"`,
-        addItems: true,
+        noResultsText: 'No results found',
+        itemSelectText: '',
         duplicateItemsAllowed: false,
         shouldSort: false,
-        paste: false,
-        addItemFilter: (value) => value && value.trim().length > 0,
-        addItemText: (value) => `Press Enter to add: "${value}"`,
-        callbackOnCreateTemplates: function (template) {
-          return {
-            noResults: (classNames, searchValue) =>
-              template('div', {
-                class: classNames.noResults,
-                'data-choice': '',
-              }, `Press Enter to add: "${searchValue}"`)
-          };
-        }
+        addItems: true,
+        paste: false
       });
     
-      // Handle Enter key to add new item
-      selectEl.parentElement.querySelector('.choices__input').addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-          const inputValue = e.target.value.trim();
-          if (!inputValue) return;
+      const inputWatcher = setInterval(() => {
+        const inputField = document.querySelector('.choices__input');
+        if (!inputField) return;
     
-          const exists = choicesInstance.getValue(true).includes(inputValue);
-          if (exists) return;
+        clearInterval(inputWatcher); // once found, clear interval
     
-          choicesInstance.setValue([{ value: inputValue, label: inputValue }]);
-          e.target.value = '';
-        }
-      });
+        inputField.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const newItem = inputField.value.trim();
+            if (!newItem) return;
+    
+            const existingItems = choicesInstance.getValue(true);
+            if (!existingItems.includes(newItem)) {
+              choicesInstance.setValue([{ value: newItem, label: newItem }]);
+            }
+            inputField.value = '';
+          }
+        });
+      }, 200);
     }
 
     // Toast message
