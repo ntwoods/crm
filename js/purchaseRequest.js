@@ -13,65 +13,43 @@ document.addEventListener('DOMContentLoaded', () => {
     let choicesInstance = null;
 
     // Load items and initialize dropdown
-async function fetchItemListFromSheet() {
-    const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
-    try {
-        const response = await fetch(url);
-        const csvText = await response.text();
-        const rows = csvText.split('
-').slice(2); // skip headers
-        const items = rows
-            .map(row => row.split(',')[2])
-            .filter(item => item && item.trim() !== '')
-            .map(item => ({ value: item.trim(), label: item.trim() }));
+    async function fetchItemListFromSheet() {
+        const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
+        try {
+            const response = await fetch(url);
+            const csvText = await response.text();
+            const rows = csvText.split('\n').slice(2); // skip headers
+            const items = rows.map(row => row.split(',')[2]).filter(item => item && item.trim() !== '');
 
-        initChoicesDropdown(items);
-    } catch (error) {
-        console.error('Failed to fetch item list:', error);
-        showToast('Failed to load item list.', 'error');
+            const selector = document.getElementById('item-selector');
+            selector.innerHTML = '';
+
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                selector.appendChild(opt);
+            });
+
+            initChoicesDropdown();
+        } catch (error) {
+            console.error('Failed to fetch item list:', error);
+            showToast('Failed to load item list.', 'error');
+        }
     }
-}
 
-function initChoicesDropdown(itemsArray) {
-    const selectEl = document.getElementById('item-selector');
-    if (choicesInstance) choicesInstance.destroy();
+    function initChoicesDropdown() {
+        const selectEl = document.getElementById('item-selector');
+        if (choicesInstance) choicesInstance.destroy();
 
-    choicesInstance = new Choices(selectEl, {
-        removeItemButton: true,
-        searchEnabled: true,
-        placeholderValue: 'Search and select items',
-        noResultsText: (value) => `Press Enter to add: "${value}"`,
-        addItems: true,
-        duplicateItemsAllowed: false,
-        shouldSort: false,
-        paste: false,
-        addItemFilter: (value) => value && value.trim().length > 0,
-        addItemText: (value) => `Press Enter to add: "${value}"`,
-    });
-
-    choicesInstance.setChoices(itemsArray, 'value', 'label', true);
-
-    const inputWatcher = setInterval(() => {
-        const inputField = document.querySelector('.choices__input');
-        if (!inputField) return;
-
-        clearInterval(inputWatcher);
-
-        inputField.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const newItem = inputField.value.trim();
-                if (!newItem) return;
-
-                const existingItems = choicesInstance.getValue(true);
-                if (!existingItems.includes(newItem)) {
-                    choicesInstance.setValue([{ value: newItem, label: newItem }]);
-                }
-                inputField.value = '';
-            }
+        choicesInstance = new Choices(selectEl, {
+            removeItemButton: true,
+            searchEnabled: true,
+            placeholderValue: 'Search and select items',
+            noResultsText: 'No items found',
+            itemSelectText: '',
+            maxItemCount: 100
         });
-    }, 100);
-});
     }
 
     // Toast message
