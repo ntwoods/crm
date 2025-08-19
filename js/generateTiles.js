@@ -7,7 +7,7 @@ document.getElementById("additional-order-link").href =
 document.getElementById("purchase-request-link").href =
   "https://ntwoods.github.io/ordertodispatch/purchaseRequestStatus.html?crmName=" + ENCODED_CRM;
 document.getElementById("completed-sales-orders-btn").href =
-  "https://ntwoods.github.io/ordertodispatch/completedSalesOrdersCRM.html?crmName=" + ENCODED_CRM;
+  "https://ntwoods.github.io/ordertodispatch/completedSalesOrdersCRM.html?crm=" + ENCODED_CRM;
 
 
 const cardsData = [
