@@ -7,15 +7,6 @@ document.getElementById("additional-order-link").href =
 document.getElementById("purchase-request-link").href =
   "https://ntwoods.github.io/ordertodispatch/purchaseRequestStatus.html?crmName=" + ENCODED_CRM;
 
-const completedSalesOrdersBtn = document.getElementById('completed-sales-orders-btn');
-const crmName = localStorage.getItem("crmName");
-
-if (completedSalesOrdersBtn && crmName) {
-    // Construct the URL using the crmName from session storage
-    const encodedCrmName = encodeURIComponent(crmName);
-    completedSalesOrdersBtn.href = `https://ntwoods.github.io/ordertodispatch/completedSalesOrdersCRM.html?crm=${encodedCrmName}`;
-}
-
 const cardsData = [
   {
     id: "on-hold",
