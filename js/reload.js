@@ -1,6 +1,3 @@
-// reload.js
-let isModalOpen = false; // New global flag
-
 document.addEventListener("visibilitychange", function () {
   if (document.visibilityState === "visible" && !isModalOpen) { // Check the flag
     location.reload();
