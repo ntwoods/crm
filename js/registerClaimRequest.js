@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Images': imagesBase64,
             };
 
-            const googleAppsScriptUrl = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec'; // Replace with your new script URL
+            const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbzqQWr3dhW4E4fjA6toR7oP4yUHxf4s5-7_qoXTQV_w-uD-6L7LIuMfLD7lfLUdK-tByw/exec'; // Replace with your new script URL
 
             await fetch(googleAppsScriptUrl, {
                 method: 'POST',
