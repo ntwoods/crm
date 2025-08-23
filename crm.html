@@ -4,10 +4,8 @@
   <meta charset="UTF-8" />
   <title>NT Woods CRM – Unified Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-       <!-- Choices.js CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   
-  <!-- Choices.js JS -->
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
   <link rel="stylesheet" href="css/styles.css" />
@@ -17,6 +15,7 @@
   <script>
     const email = localStorage.getItem("crmEmail");
     const crmName = localStorage.getItem("crmName");
+    let isModalOpen = false; // Global flag to control auto-reload
 
     if (!email || !crmName) {
       // Using a custom message box instead of alert()
@@ -58,6 +57,7 @@
     <a id="purchase-request-link" class="additional-order-btn" href="#">View Purchase Req.</a>    
     <a class="additional-order-btn" href="https://shorturl.at/kuC1i" target="_blank">Checklist</a>
     <button id="raise-purchase-request-btn" class="additional-order-btn">Raise Purchase Request</button>
+    <button id="register-claim-request-btn" class="additional-order-btn">Register Claim Request</button>
     <a id="completed-sales-orders-btn" class="additional-order-btn" href="#">Completed Sales Orders</a>    
 
     <div class="header">
@@ -71,7 +71,7 @@
     </div>
 
     <div class="workflow-container" id="workflow-container">
-      </div>
+    </div>
   </div>
 
   <div id="purchase-request-modal" class="modal">
@@ -82,18 +82,15 @@
         <label for="dealer-name">Dealer Name:</label>
         <input type="text" id="dealer-name" name="Dealer Name" required>
 
-      <!-- STEP 1: Select Items -->
-      <label for="item-selector">Select Required Items:</label>
-      <select id="item-selector" multiple required></select>
-      <button type="button" id="add-custom-item-btn" style="margin-top: 5px; padding: 8px 16px; margin-left: 5px;">Add Custom Item</button> <button type="button" id="proceed-to-qty-btn" style="margin-top: 10px; padding: 8px 16px;">Next</button>        
-      
-      <!-- STEP 2: Quantity Entry - initially hidden -->
-      <div id="qty-input-section" style="display:none; margin-top: 15px;">
-        <h4>Enter Quantity for Each Item:</h4>
-        <div id="qty-fields-container"></div>
-      </div>
-
-
+        <label for="item-selector">Select Required Items:</label>
+        <select id="item-selector" multiple required></select>
+        <button type="button" id="add-custom-item-btn" style="margin-top: 5px; padding: 8px 16px; margin-left: 5px;">Add Custom Item</button> 
+        <button type="button" id="proceed-to-qty-btn" style="margin-top: 10px; padding: 8px 16px;">Next</button>        
+        
+        <div id="qty-input-section" style="display:none; margin-top: 15px;">
+          <h4>Enter Quantity for Each Item:</h4>
+          <div id="qty-fields-container"></div>
+        </div>
 
         <label for="priority-level">Priority Level:</label>
         <select id="priority-level" name="Priority Level" required>
@@ -111,10 +108,37 @@
     </div>
   </div>
 
+  <div id="claim-request-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" id="close-claim-modal-btn">&times;</span>
+      <h2>Register Claim Request</h2>
+      <form id="claim-request-form">
+        <label for="claim-dealer-name">Dealer Name:</label>
+        <input type="text" id="claim-dealer-name" name="Dealer Name" required>
+
+        <label for="product">Product:</label>
+        <input type="text" id="product" name="Product" required>
+
+        <label for="qty">Quantity:</label>
+        <input type="number" id="qty" name="Qty" min="1" required>
+
+        <label for="issue">Issue:</label>
+        <textarea id="issue" name="Issue" rows="3" required></textarea>
+
+        <label for="image-attachments">Image Attachments (optional):</label>
+        <input type="file" id="image-attachments" name="Image Attachments" multiple accept="image/*">
+        
+        <button type="submit" id="submit-claim-button">Submit Claim</button>
+        <div class="loading-spinner" id="claim-loading-spinner"></div>
+      </form>
+    </div>
+  </div>
+
   <div id="toast-container"></div>
 
   <script src="js/generateTiles.js" defer></script>
   <script src="js/dashboard.js" defer></script>
   <script src="js/purchaseRequest.js" defer></script>
+  <script src="js/registerClaimRequest.js" defer></script>
 </body>
 </html>
