@@ -4,18 +4,10 @@
   <meta charset="UTF-8" />
   <title>NT Woods CRM – Unified Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-  
-  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-
-  <link rel="stylesheet" href="css/styles.css" />
-  <script src="js/reload.js" defer></script>
-  <script src="js/navigation.js" defer></script>
-
   <script>
+    let isModalOpen = false; // Global flag to control auto-reload
     const email = localStorage.getItem("crmEmail");
     const crmName = localStorage.getItem("crmName");
-    let isModalOpen = false; // Global flag to control auto-reload
 
     if (!email || !crmName) {
       // Using a custom message box instead of alert()
@@ -48,7 +40,11 @@
     window.CRM_NAME = crmName;
     window.ENCODED_CRM = encodeURIComponent(crmName);
   </script>
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="js/reload.js" defer></script>
+  <script src="js/navigation.js" defer></script>
   <script src="js/api-config.js" defer></script>
 </head>
 <body>
