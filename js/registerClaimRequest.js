@@ -14,12 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
         isModalOpen = true;
     });
     
-
-    // Close the modal and resume auto-reload
     const closeClaimModal = () => {
         claimRequestModal.style.display = 'none';
         claimRequestForm.reset();
-        window.isModalOpen = false;
+        isModalOpen = false;
         claimLoadingSpinner.style.display = 'none';
         submitClaimButton.disabled = false;
         submitClaimButton.textContent = 'Submit Claim';
