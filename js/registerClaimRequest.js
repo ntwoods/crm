@@ -9,11 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitClaimButton = document.getElementById('submit-claim-button');
     const claimLoadingSpinner = document.getElementById('claim-loading-spinner');
 
-    // Show the modal and stop auto-reload
     registerClaimBtn.addEventListener('click', () => {
         claimRequestModal.style.display = 'block';
-        window.isModalOpen = true;
+        isModalOpen = true;
     });
+    
 
     // Close the modal and resume auto-reload
     const closeClaimModal = () => {
