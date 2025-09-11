@@ -9,9 +9,6 @@ document.getElementById("purchase-request-link").href =
 document.getElementById("completed-sales-orders-btn").href =
   "https://ntwoods.github.io/ordertodispatch/completedSalesOrdersCRM.html?crm=" + ENCODED_CRM;
 
-
-
-
 const cardsData = [
   {
     id: "on-hold",
