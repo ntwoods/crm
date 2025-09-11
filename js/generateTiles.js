@@ -73,7 +73,7 @@ const cardsData = [
   },
   {
     id: "level10",
-    level: "Claim Requests",
+    level: "Claim-Requests",
     title: "Dealer's Claim Request",
     description: "Inform Owner's & Move Forward",
     url: "informOwnersClaimReq.html",
