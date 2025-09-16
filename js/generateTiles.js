@@ -67,14 +67,7 @@ const cardsData = [
     title: "Goods Delivery Confirmation",
     description: "Confirmation of Goods Receiving from Dealer.",
     url: "L6.html",
-  },
-  {
-    id: "level10",
-    level: "Claim-Requests",
-    title: "Dealer's Claim Request",
-    description: "Inform Owner's & Move Forward",
-    url: "informOwnersClaimReq.html",
-  },  
+  }, 
 ];
 
 cardsData.forEach((card) => {
