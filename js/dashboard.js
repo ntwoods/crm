@@ -36,4 +36,3 @@ async function fetchAndUpdateCount(levelKey, elementId, cardId) {
         fetchAndUpdateCount('level7', 'level7-count', 'level7-card');
         fetchAndUpdateCount('level8', 'level8-count', 'level8-card');
         fetchAndUpdateCount('level9', 'level9-count', 'level9-card');        
-        fetchAndUpdateCount('level10', 'level10-count', 'level10-card');
