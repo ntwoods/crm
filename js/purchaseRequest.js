@@ -1,4 +1,3 @@
-// GLOBAL variable defined (ensure this is accessible)
 document.addEventListener('DOMContentLoaded', () => {
     const raisePurchaseRequestBtn = document.getElementById('raise-purchase-request-btn');
     const purchaseRequestModal = document.getElementById('purchase-request-modal');
@@ -9,65 +8,148 @@ document.addEventListener('DOMContentLoaded', () => {
     const proceedToQtyBtn = document.getElementById('proceed-to-qty-btn');
     const qtySection = document.getElementById('qty-input-section');
     const qtyFieldsContainer = document.getElementById('qty-fields-container');
-    const addCustomItemBtn = document.getElementById('add-custom-item-btn'); // Get the new button
+    const addCustomItemBtn = document.getElementById('add-custom-item-btn');
 
+    // New elements for Category
+    const categorySelectEl = document.getElementById('category-selector');
+    const itemSelectEl = document.getElementById('item-selector');
 
-    let choicesInstance = null;
+    // Choices instances
+    let itemChoices = null;
+    let categoryChoices = null;
 
-    // Load items and initialize dropdown
-    async function fetchItemListFromSheet() {
+    // Data caches
+    let allItems = []; // ["Item A", "Item B", ...]
+    let categories = []; // ["PVC Door", "Laminates", ...]
+    let productsByCategory = {}; // { "PVC Door": ["P1", "P2"], ... }
+
+    // Load categories & items and initialize dropdowns
+    async function fetchIMSDataAndInit() {
         const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
         try {
             const response = await fetch(url);
             const csvText = await response.text();
-            const rows = csvText.split('\n').slice(2); // skip headers
-            const items = rows.map(row => row.split(',')[2]).filter(item => item && item.trim() !== '');
+            const rows = csvText.split('\n').slice(2); // skip headers (kept as in existing logic)
 
-            const selector = document.getElementById('item-selector');
-            selector.innerHTML = '';
+            const catSet = new Set();
+            const prodSet = new Set();
+            productsByCategory = {};
 
-            items.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item;
-                opt.textContent = item;
-                selector.appendChild(opt);
+            rows.forEach(r => {
+                if (!r.trim()) return;
+                const cols = r.split(',');
+                const cat = (cols[1] || '').trim(); // Column B
+                const prod = (cols[2] || '').trim(); // Column C
+                if (!cat && !prod) return;
+
+                if (cat) catSet.add(cat);
+                if (prod) prodSet.add(prod);
+
+                if (cat && prod) {
+                    if (!productsByCategory[cat]) productsByCategory[cat] = [];
+                    productsByCategory[cat].push(prod);
+                }
             });
 
-            initChoicesDropdown();
+            categories = Array.from(catSet).sort((a,b) => a.localeCompare(b));
+            allItems = Array.from(prodSet).sort((a,b) => a.localeCompare(b));
+
+            initCategoryChoices(categories);
+            initItemChoices(allItems); // start with full list; will filter after category selection
         } catch (error) {
-            console.error('Failed to fetch item list:', error);
-            showToast('Failed to load item list.', 'error');
+            console.error('Failed to fetch IMS data:', error);
+            showToast('Failed to load categories/products.', 'error');
         }
     }
 
-    function initChoicesDropdown() {
-        const selectEl = document.getElementById('item-selector');
-        if (choicesInstance) choicesInstance.destroy();
+    function initCategoryChoices(options) {
+        // Destroy old instance if any
+        if (categoryChoices) categoryChoices.destroy();
+        // Reset DOM options
+        categorySelectEl.innerHTML = '';
+        // Placeholder option
+        const placeholderOpt = document.createElement('option');
+        placeholderOpt.value = '';
+        placeholderOpt.textContent = 'Select a category';
+        categorySelectEl.appendChild(placeholderOpt);
+        // Add options
+        options.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat;
+            opt.textContent = cat;
+            categorySelectEl.appendChild(opt);
+        });
+        // Create Choices instance
+        categoryChoices = new Choices(categorySelectEl, {
+            searchEnabled: true,
+            removeItemButton: false,
+            placeholderValue: 'Search a category',
+            allowHTML: false,
+            itemSelectText: '',
+            shouldSort: false
+        });
 
-        choicesInstance = new Choices(selectEl, {
+        // On change → filter items
+        categorySelectEl.addEventListener('change', () => {
+            const selectedCat = categorySelectEl.value;
+            if (selectedCat && productsByCategory[selectedCat]) {
+                const list = productsByCategory[selectedCat].slice().sort((a,b) => a.localeCompare(b));
+                setItemChoices(list);
+            } else {
+                setItemChoices(allItems);
+            }
+        });
+    }
+
+    function initItemChoices(options) {
+        if (itemChoices) itemChoices.destroy();
+        itemSelectEl.innerHTML = '';
+        options.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item;
+            opt.textContent = item;
+            itemSelectEl.appendChild(opt);
+        });
+        itemChoices = new Choices(itemSelectEl, {
             removeItemButton: true,
             searchEnabled: true,
-            placeholderValue: 'Search and select items or type a new one', // Adjusted placeholder
-            noResultsText: 'Type to add as a new item.', // Adjusted no results text
+            placeholderValue: 'Search and select items or type a new one',
+            noResultsText: 'Type to add as a new item.',
             itemSelectText: '',
             maxItemCount: 100,
             allowHTML: false,
-            // crucial configuration for allowing new items
-            createTag: true, // This enables creation of new items
-            // We'll manually add the item from the input using the button click
-            // So we don't need addItemFilter or callbackOnCreateTemplates for this specific approach
+            // Allow free text via our custom button below
+            createTag: true,
+        });
+    }
+
+    function setItemChoices(options) {
+        if (!itemChoices) return initItemChoices(options);
+        // Reset choices with new list while preserving selected where possible
+        const selectedValues = itemChoices.getValue(true);
+        itemChoices.clearStore();
+        itemChoices.setChoices(
+            options.map(v => ({ value: v, label: v })),
+            'value',
+            'label',
+            true
+        );
+        // Re-select items that still exist
+        selectedValues.forEach(v => {
+            if (options.includes(v)) {
+                itemChoices.setChoiceByValue(v);
+            }
         });
     }
 
     // Event listener for the new "Add Custom Item" button
     addCustomItemBtn.addEventListener('click', () => {
-        const customItemInput = choicesInstance.input.element.value.trim();
+        const customItemInput = itemChoices?.input?.element?.value?.trim();
         if (customItemInput) {
-            // Check if the item already exists to avoid duplicates
-            const currentItems = choicesInstance.getValue(true); // true returns just values
+            const currentItems = itemChoices.getValue(true);
             if (!currentItems.includes(customItemInput)) {
-                choicesInstance.setChoices([{ value: customItemInput, label: customItemInput, selected: true }], 'value', 'label', true);
-                choicesInstance.input.element.value = ''; // Clear the input field
+                itemChoices.setChoices([{ value: customItemInput, label: customItemInput, selected: true }], 'value', 'label', true);
+                itemChoices.input.element.value = '';
                 showToast(`'${customItemInput}' added as a custom item.`, 'success');
             } else {
                 showToast(`'${customItemInput}' is already selected.`, 'info');
@@ -98,7 +180,11 @@ document.addEventListener('DOMContentLoaded', () => {
     raisePurchaseRequestBtn.addEventListener('click', () => {
         purchaseRequestModal.style.display = 'block';
         isModalOpen = true;
-        fetchItemListFromSheet();
+        // Populate categories & items fresh each open
+        fetchIMSDataAndInit();
+        // Reset qty section on open
+        qtySection.style.display = 'none';
+        qtyFieldsContainer.innerHTML = '';
     });
 
     const closeModal = () => {
@@ -110,7 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
         prLoadingSpinner.style.display = 'none';
         submitPrButton.disabled = false;
         submitPrButton.textContent = 'Submit Request';
-        if (choicesInstance) choicesInstance.clearStore();
+        if (itemChoices) itemChoices.clearStore();
+        if (categoryChoices) categoryChoices.clearStore();
     };
 
     closeButton.addEventListener('click', closeModal);
@@ -118,23 +205,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target === purchaseRequestModal) closeModal();
     });
 
-    // ✅ NEXT button logic
+    // NEXT button logic → build quantity inputs for selected items
     proceedToQtyBtn.addEventListener('click', () => {
-      const selectedOptions = choicesInstance.getValue(); // [{ value: ..., label: ... }]
-    
+      const selectedOptions = itemChoices.getValue(); // [{ value, label }]
       if (!selectedOptions || selectedOptions.length === 0) {
         showToast('Please select at least one item.', 'error');
         return;
       }
-    
-      qtyFieldsContainer.innerHTML = ''; // Clear old inputs
-    
+
+      qtyFieldsContainer.innerHTML = '';
+
       selectedOptions.forEach(option => {
         const item = option.value?.trim();
         if (!item) return;
-    
+
         const safeId = item.replace(/\W+/g, '-').toLowerCase();
-    
+
         const input = document.createElement('input');
         input.type = 'number';
         input.min = '1';
@@ -144,22 +230,22 @@ document.addEventListener('DOMContentLoaded', () => {
         input.style.marginBottom = '10px';
         input.setAttribute('data-item', item);
         input.setAttribute('id', `qty-${safeId}`);
-    
+
         const label = document.createElement('label');
         label.setAttribute('for', `qty-${safeId}`);
         label.textContent = item;
-    
+
         const wrapper = document.createElement('div');
         wrapper.appendChild(label);
         wrapper.appendChild(input);
-    
+
         qtyFieldsContainer.appendChild(wrapper);
       });
-    
+
       qtySection.style.display = 'block';
     });
 
-    // ✅ Final form submit logic
+    // Final form submit logic (unchanged payload structure)
     purchaseRequestForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
