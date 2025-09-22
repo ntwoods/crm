@@ -1,228 +1,184 @@
-// GLOBAL variable defined (ensure this is accessible)
 document.addEventListener('DOMContentLoaded', () => {
-    const raisePurchaseRequestBtn = document.getElementById('raise-purchase-request-btn');
-    const purchaseRequestModal = document.getElementById('purchase-request-modal');
-    const closeButton = purchaseRequestModal.querySelector('.close-button');
-    const purchaseRequestForm = document.getElementById('purchase-request-form');
-    const submitPrButton = document.getElementById('submit-pr-button');
-    const prLoadingSpinner = document.getElementById('pr-loading-spinner');
-    const proceedToQtyBtn = document.getElementById('proceed-to-qty-btn');
-    const qtySection = document.getElementById('qty-input-section');
-    const qtyFieldsContainer = document.getElementById('qty-fields-container');
-    const addCustomItemBtn = document.getElementById('add-custom-item-btn'); // Get the new button
+  const purchaseRequestModal = document.getElementById('purchase-request-modal');
+  const raisePurchaseRequestBtn = document.getElementById('raise-purchase-request-btn');
+  const closePurchaseRequest = document.getElementById('close-purchase-request');
+  const itemSelector = document.getElementById('item-selector');
+  const categorySelector = document.getElementById('category-selector');
+  const qtySection = document.getElementById('qty-input-section');
+  const qtyFieldsContainer = document.getElementById('qty-fields-container');
+  const submitBtn = document.getElementById('submit-purchase-request');
+  const loadingSpinner = document.getElementById('pr-loading-spinner');
 
+  let choicesInstance = null;
+  let categoryChoices = null;
+  let allIMSData = []; // store full IMS rows for category filtering
 
-    let choicesInstance = null;
+  raisePurchaseRequestBtn.addEventListener('click', () => {
+    purchaseRequestModal.style.display = 'block';
+    fetchItemListFromSheet();
+  });
 
-    // Load items and initialize dropdown
-    async function fetchItemListFromSheet() {
-        const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
-        try {
-            const response = await fetch(url);
-            const csvText = await response.text();
-            const rows = csvText.split('\n').slice(2); // skip headers
-            const items = rows.map(row => row.split(',')[2]).filter(item => item && item.trim() !== '');
+  closePurchaseRequest.addEventListener('click', () => {
+    purchaseRequestModal.style.display = 'none';
+    resetForm();
+  });
 
-            const selector = document.getElementById('item-selector');
-            selector.innerHTML = '';
+  async function fetchItemListFromSheet() {
+    try {
+      const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
+      const response = await fetch(url);
+      const data = await response.text();
 
-            items.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item;
-                opt.textContent = item;
-                selector.appendChild(opt);
-            });
+      // Parse CSV (skip headers)
+      const rows = data.split('\n').slice(2);
+      allIMSData = rows
+        .map(row => row.split(','))
+        .filter(r => r[1] && r[2]); // ensure category and product present
 
-            initChoicesDropdown();
-        } catch (error) {
-            console.error('Failed to fetch item list:', error);
-            showToast('Failed to load item list.', 'error');
-        }
+      populateCategoryDropdown();
+    } catch (error) {
+      showToast('Error fetching IMS data', 'error');
     }
+  }
 
-    function initChoicesDropdown() {
-        const selectEl = document.getElementById('item-selector');
-        if (choicesInstance) choicesInstance.destroy();
+  function populateCategoryDropdown() {
+    const uniqueCategories = [...new Set(allIMSData.map(r => r[1].trim()))].sort();
+    categorySelector.innerHTML = uniqueCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
 
-        choicesInstance = new Choices(selectEl, {
-            removeItemButton: true,
-            searchEnabled: true,
-            placeholderValue: 'Search and select items or type a new one', // Adjusted placeholder
-            noResultsText: 'Type to add as a new item.', // Adjusted no results text
-            itemSelectText: '',
-            maxItemCount: 100,
-            allowHTML: false,
-            // crucial configuration for allowing new items
-            createTag: true, // This enables creation of new items
-            // We'll manually add the item from the input using the button click
-            // So we don't need addItemFilter or callbackOnCreateTemplates for this specific approach
-        });
-    }
-
-    // Event listener for the new "Add Custom Item" button
-    addCustomItemBtn.addEventListener('click', () => {
-        const customItemInput = choicesInstance.input.element.value.trim();
-        if (customItemInput) {
-            // Check if the item already exists to avoid duplicates
-            const currentItems = choicesInstance.getValue(true); // true returns just values
-            if (!currentItems.includes(customItemInput)) {
-                choicesInstance.setChoices([{ value: customItemInput, label: customItemInput, selected: true }], 'value', 'label', true);
-                choicesInstance.input.element.value = ''; // Clear the input field
-                showToast(`'${customItemInput}' added as a custom item.`, 'success');
-            } else {
-                showToast(`'${customItemInput}' is already selected.`, 'info');
-            }
-        } else {
-            showToast('Please type a custom item name to add.', 'error');
-        }
+    if (categoryChoices) categoryChoices.destroy();
+    categoryChoices = new Choices(categorySelector, {
+      searchEnabled: true,
+      allowHTML: false,
+      placeholder: true,
+      placeholderValue: 'Select category...'
     });
 
-    // Toast message
-    function showToast(message, type = 'info', duration = 3000) {
-        const toastContainer = document.getElementById('toast-container');
-        if (!toastContainer) return;
+    categorySelector.addEventListener('change', handleCategoryChange);
+    handleCategoryChange(); // populate default products based on first category
+  }
 
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.textContent = message;
-        toastContainer.appendChild(toast);
+  function handleCategoryChange() {
+    const selectedCategory = categorySelector.value;
+    const filteredProducts = allIMSData
+      .filter(r => r[1].trim() === selectedCategory)
+      .map(r => r[2].trim());
 
-        setTimeout(() => toast.classList.add('show'), 10);
-        setTimeout(() => {
-            toast.classList.remove('show');
-            toast.addEventListener('transitionend', () => toast.remove());
-        }, duration);
+    populateItemDropdown(filteredProducts);
+  }
+
+  function populateItemDropdown(items) {
+    itemSelector.innerHTML = '';
+    items.forEach(item => {
+      const opt = document.createElement('option');
+      opt.value = item;
+      opt.textContent = item;
+      itemSelector.appendChild(opt);
+    });
+
+    if (choicesInstance) choicesInstance.destroy();
+    choicesInstance = new Choices(itemSelector, {
+      removeItemButton: true,
+      searchEnabled: true,
+      placeholder: true,
+      placeholderValue: 'Search products...',
+      maxItemCount: 100,
+      allowHTML: false
+    });
+  }
+
+  document.getElementById('next-btn').addEventListener('click', () => {
+    const selectedItems = choicesInstance.getValue(true); // get array of selected values
+    if (!selectedItems.length) {
+      showToast('Please select at least one product', 'info');
+      return;
     }
 
-    // Modal show/hide
-    raisePurchaseRequestBtn.addEventListener('click', () => {
-        purchaseRequestModal.style.display = 'block';
-        isModalOpen = true;
-        fetchItemListFromSheet();
+    qtyFieldsContainer.innerHTML = '';
+    selectedItems.forEach(item => {
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('qty-field');
+      const label = document.createElement('label');
+      label.textContent = item;
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.min = 1;
+      input.required = true;
+      input.dataset.item = item;
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+      qtyFieldsContainer.appendChild(wrapper);
     });
 
-    const closeModal = () => {
-        purchaseRequestModal.style.display = 'none';
-        purchaseRequestForm.reset();
-        qtySection.style.display = 'none';
-        qtyFieldsContainer.innerHTML = '';
-        isModalOpen = false;
-        prLoadingSpinner.style.display = 'none';
-        submitPrButton.disabled = false;
-        submitPrButton.textContent = 'Submit Request';
-        if (choicesInstance) choicesInstance.clearStore();
-    };
+    qtySection.style.display = 'block';
+  });
 
-    closeButton.addEventListener('click', closeModal);
-    window.addEventListener('click', (event) => {
-        if (event.target === purchaseRequestModal) closeModal();
-    });
+  submitBtn.addEventListener('click', async () => {
+    const dealerName = document.getElementById('dealer-name').value.trim();
+    const priority = document.getElementById('priority-level').value;
+    const remarks = document.getElementById('remarks').value.trim();
 
-    // ✅ NEXT button logic
-    proceedToQtyBtn.addEventListener('click', () => {
-      const selectedOptions = choicesInstance.getValue(); // [{ value: ..., label: ... }]
-    
-      if (!selectedOptions || selectedOptions.length === 0) {
-        showToast('Please select at least one item.', 'error');
+    const qtyInputs = qtyFieldsContainer.querySelectorAll('input');
+    const itemsObj = {};
+    for (const input of qtyInputs) {
+      const val = parseInt(input.value);
+      if (isNaN(val) || val <= 0) {
+        showToast(`Enter a valid quantity for ${input.dataset.item}`, 'error');
         return;
       }
-    
-      qtyFieldsContainer.innerHTML = ''; // Clear old inputs
-    
-      selectedOptions.forEach(option => {
-        const item = option.value?.trim();
-        if (!item) return;
-    
-        const safeId = item.replace(/\W+/g, '-').toLowerCase();
-    
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.min = '1';
-        input.required = true;
-        input.placeholder = 'Quantity';
-        input.style.width = '100%';
-        input.style.marginBottom = '10px';
-        input.setAttribute('data-item', item);
-        input.setAttribute('id', `qty-${safeId}`);
-    
-        const label = document.createElement('label');
-        label.setAttribute('for', `qty-${safeId}`);
-        label.textContent = item;
-    
-        const wrapper = document.createElement('div');
-        wrapper.appendChild(label);
-        wrapper.appendChild(input);
-    
-        qtyFieldsContainer.appendChild(wrapper);
+      itemsObj[input.dataset.item] = val;
+    }
+
+    if (!dealerName) {
+      showToast('Dealer Name is required', 'error');
+      return;
+    }
+
+    const formData = {
+      'Dealer Name': dealerName,
+      'Priority Level': priority,
+      'Remarks': remarks,
+      'CRM Name': localStorage.getItem('crmName') || '',
+      'Request Date': new Date().toLocaleString(),
+      'Requested Items': itemsObj
+    };
+
+    try {
+      loadingSpinner.style.display = 'block';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      await fetch('https://script.google.com/macros/s/AKfycbyffY1_V3ap0VOnFJ8tIPP5bR9_gy_cVQ8_WmLpu0Q6E_dzHOUDPbdXnP4Db5gXRyxl/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
       });
-    
-      qtySection.style.display = 'block';
-    });
 
-    // ✅ Final form submit logic
-    purchaseRequestForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
+      showToast('Purchase Request Submitted Successfully!', 'success');
+      purchaseRequestModal.style.display = 'none';
+      resetForm();
+    } catch (error) {
+      showToast('Error submitting purchase request', 'error');
+    } finally {
+      loadingSpinner.style.display = 'none';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Request';
+    }
+  });
 
-        prLoadingSpinner.style.display = 'block';
-        submitPrButton.disabled = true;
-        submitPrButton.textContent = 'Submitting...';
+  function resetForm() {
+    if (choicesInstance) choicesInstance.destroy();
+    if (categoryChoices) categoryChoices.destroy();
+    itemSelector.innerHTML = '';
+    categorySelector.innerHTML = '';
+    qtySection.style.display = 'none';
+    qtyFieldsContainer.innerHTML = '';
+    document.getElementById('dealer-name').value = '';
+    document.getElementById('remarks').value = '';
+    allIMSData = [];
+  }
 
-        const dealerName = document.getElementById('dealer-name').value.trim();
-        const priorityLevel = document.getElementById('priority-level').value;
-        const remarks = document.getElementById('remarks').value.trim();
-        const crmName = window.CRM_NAME;
-        const requestDate = new Date().toLocaleString();
-
-        const qtyInputs = document.querySelectorAll('#qty-fields-container input');
-        let itemQtyMap = {};
-
-        try {
-            qtyInputs.forEach(input => {
-              const item = input.getAttribute('data-item')?.trim();
-              const qty = parseInt(input.value.trim());
-
-              if (!item || isNaN(qty) || qty <= 0) {
-                showToast(`Invalid quantity for ${item || 'unknown item'}`, 'error');
-                throw new Error('Invalid qty input');
-              }
-
-              itemQtyMap[item] = qty;
-            });
-        } catch (e) {
-            prLoadingSpinner.style.display = 'none';
-            submitPrButton.disabled = false;
-            submitPrButton.textContent = 'Submit Request';
-            return; // Stop the submission if quantity is invalid
-        }
-
-        const formData = {
-            'Dealer Name': dealerName,
-            'Priority Level': priorityLevel,
-            'Remarks': remarks,
-            'CRM Name': crmName,
-            'Request Date': requestDate,
-            'Requested Items': itemQtyMap
-        };
-
-        const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbyffY1_V3ap0VOnFJ8tIPP5bR9_gy_cVQ8_WmLpu0Q6E_dzHOUDPbdXnP4Db5gXRyxl/exec';
-
-        try {
-            await fetch(googleAppsScriptUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-
-            showToast('Purchase request sent!', 'success');
-            closeModal();
-
-        } catch (error) {
-            console.error('Error sending purchase request:', error);
-            showToast('Failed to send request. Check connection.', 'error');
-            prLoadingSpinner.style.display = 'none';
-            submitPrButton.disabled = false;
-            submitPrButton.textContent = 'Submit Request';
-        }
-    });
+  function showToast(message, type) {
+    // simple console toast (replace with your real toast implementation)
+    console.log(`[${type.toUpperCase()}] ${message}`);
+  }
 });
