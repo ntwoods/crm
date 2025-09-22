@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'value', 'label', true
           );
         });
+    }
 
     function initItemChoices(options) {
         if (itemChoices) itemChoices.destroy();
