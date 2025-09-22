@@ -89,17 +89,25 @@ document.addEventListener('DOMContentLoaded', () => {
             shouldSort: false
         });
 
-        // On change → filter items
+                // On change → filter items
         categorySelectEl.addEventListener('change', () => {
-            const selectedCat = categorySelectEl.value;
-            if (selectedCat && productsByCategory[selectedCat]) {
-                const list = productsByCategory[selectedCat].slice().sort((a,b) => a.localeCompare(b));
-                setItemChoices(list);
-            } else {
-                setItemChoices(allItems);
-            }
+          const selectedCat = categorySelectEl.value;
+          const currentSelections = itemChoices.getValue(true); // get currently selected items
+        
+          let newOptions = selectedCat && productsByCategory[selectedCat] 
+            ? productsByCategory[selectedCat].slice().sort((a, b) => a.localeCompare(b))
+            : allItems;
+        
+          // Merge previously selected items so they remain available + selected
+          const uniqueSet = new Set([...currentSelections, ...newOptions]);
+          const mergedList = Array.from(uniqueSet).sort((a, b) => a.localeCompare(b));
+        
+          itemChoices.clearStore();
+          itemChoices.setChoices(
+            mergedList.map(v => ({ value: v, label: v, selected: currentSelections.includes(v) })),
+            'value', 'label', true
+          );
         });
-    }
 
     function initItemChoices(options) {
         if (itemChoices) itemChoices.destroy();
