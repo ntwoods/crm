@@ -70,6 +70,7 @@
     </div>
   </div>
 
+  <!-- Purchase Request Modal -->
   <div id="purchase-request-modal" class="modal">
     <div class="modal-content">
       <span class="close-button">&times;</span>
@@ -78,11 +79,17 @@
         <label for="dealer-name">Dealer Name:</label>
         <input type="text" id="dealer-name" name="Dealer Name" required>
 
+        <!-- New: Category selector (searchable) -->
+        <label for="category-selector">Category:</label>
+        <select id="category-selector" required>
+          <!-- options injected by JS -->
+        </select>
+
         <label for="item-selector">Select Required Items:</label>
         <select id="item-selector" multiple required></select>
-        <button type="button" id="add-custom-item-btn" style="margin-top: 5px; padding: 8px 16px; margin-left: 5px;">Add Custom Item</button> 
-        <button type="button" id="proceed-to-qty-btn" style="margin-top: 10px; padding: 8px 16px;">Next</button>        
-        
+        <button type="button" id="add-custom-item-btn" style="margin-top: 5px; padding: 8px 16px; margin-left: 5px;">Add Custom Item</button>
+        <button type="button" id="proceed-to-qty-btn" style="margin-top: 10px; padding: 8px 16px;">Next</button>
+
         <div id="qty-input-section" style="display:none; margin-top: 15px;">
           <h4>Enter Quantity for Each Item:</h4>
           <div id="qty-fields-container"></div>
