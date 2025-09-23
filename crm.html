@@ -10,6 +10,7 @@
     const crmName = localStorage.getItem("crmName");
 
     if (!email || !crmName) {
+      // Using a custom message box instead of alert()
       const showMessageBox = (message, type = 'info') => {
           const modal = document.createElement('div');
           modal.className = 'modal';
@@ -69,7 +70,6 @@
     </div>
   </div>
 
-  <!-- Purchase Request Modal -->
   <div id="purchase-request-modal" class="modal">
     <div class="modal-content">
       <span class="close-button">&times;</span>
@@ -77,10 +77,6 @@
       <form id="purchase-request-form">
         <label for="dealer-name">Dealer Name:</label>
         <input type="text" id="dealer-name" name="Dealer Name" required>
-
-        <!-- ✅ NEW CATEGORY DROPDOWN ADDED -->
-        <label for="category-selector">Select Category:</label>
-        <select id="category-selector" required></select>
 
         <label for="item-selector">Select Required Items:</label>
         <select id="item-selector" multiple required></select>
@@ -108,7 +104,6 @@
     </div>
   </div>
 
-  <!-- Claim Request Modal -->
   <div id="claim-request-modal" class="modal">
     <div class="modal-content">
       <span class="close-button" id="close-claim-modal-btn">&times;</span>
