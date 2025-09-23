@@ -33,6 +33,21 @@
   transition: background-color 0.3s ease;
 }
 
+.suggestion-box {
+  display: inline-block;
+  background-color: orange; /* dark slate color */
+  color: black; /* light grey-white */
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+
+
 .additional-order-btn:hover {
   background-color: #1a252f; /* slightly darker on hover */
   color: #ffffff;
