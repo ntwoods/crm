@@ -70,57 +70,38 @@
     </div>
   </div>
 
-  <!-- Purchase Request Modal -->
   <div id="purchase-request-modal" class="modal">
-  <div class="modal-content">
-  <span id="close-purchase-request" class="close">&times;</span>
-  <h2>Raise Purchase Request</h2>
-  
-  
-  <div class="form-group">
-  <label for="dealer-name">Dealer Name</label>
-  <input type="text" id="dealer-name" required />
-  </div>
-  
-  
-  <!-- Newly added category dropdown -->
-  <div class="form-group">
-  <label for="category-selector">Select Category</label>
-  <select id="category-selector" class="searchable-select"></select>
-  </div>
-  
-  
-  <div class="form-group">
-  <label for="item-selector">Select Required Items</label>
-  <select id="item-selector" multiple></select>
-  </div>
-  
-  
-  <button id="add-custom-item">Add Custom Item</button>
-  <button id="next-btn">Next</button>
-  
-  
-  <div id="qty-input-section" style="display:none;">
-  <div id="qty-fields-container"></div>
-  </div>
-  
-  
-  <div class="form-group">
-  <label for="priority-level">Priority Level</label>
-  <select id="priority-level">
-  <option value="Low">Low</option>
-  <option value="Medium">Medium</option>
-  <option value="High">High</option>
-  </select>
-  </div>
-  
-  
-  <textarea id="remarks" placeholder="Remarks"></textarea>
-  
-  
-  <button id="submit-purchase-request">Submit Request</button>
-  <div id="pr-loading-spinner" style="display:none;">Submitting...</div>
-  </div>
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Raise Purchase Request</h2>
+      <form id="purchase-request-form">
+        <label for="dealer-name">Dealer Name:</label>
+        <input type="text" id="dealer-name" name="Dealer Name" required>
+
+        <label for="item-selector">Select Required Items:</label>
+        <select id="item-selector" multiple required></select>
+        <button type="button" id="add-custom-item-btn" style="margin-top: 5px; padding: 8px 16px; margin-left: 5px;">Add Custom Item</button> 
+        <button type="button" id="proceed-to-qty-btn" style="margin-top: 10px; padding: 8px 16px;">Next</button>        
+        
+        <div id="qty-input-section" style="display:none; margin-top: 15px;">
+          <h4>Enter Quantity for Each Item:</h4>
+          <div id="qty-fields-container"></div>
+        </div>
+
+        <label for="priority-level">Priority Level:</label>
+        <select id="priority-level" name="Priority Level" required>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+
+        <label for="remarks">Remarks:</label>
+        <textarea id="remarks" name="Remarks" rows="3"></textarea>
+
+        <button type="submit" id="submit-pr-button">Submit Request</button>
+        <div class="loading-spinner" id="pr-loading-spinner"></div>
+      </form>
+    </div>
   </div>
 
   <div id="claim-request-modal" class="modal">
