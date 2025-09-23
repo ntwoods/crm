@@ -78,6 +78,14 @@
         <label for="dealer-name">Dealer Name:</label>
         <input type="text" id="dealer-name" name="Dealer Name" required>
 
+        <div class="form-group">
+          <label for="category-selector">Category</label>
+          <select id="category-selector" name="category-selector" required>
+            <option value="">Select a category</option>
+            <!-- JS will dynamically populate categories here -->
+          </select>
+        </div>
+        
         <label for="item-selector">Select Required Items:</label>
         <select id="item-selector" multiple required></select>
         <button type="button" id="add-custom-item-btn" style="margin-top: 5px; padding: 8px 16px; margin-left: 5px;">Add Custom Item</button> 
