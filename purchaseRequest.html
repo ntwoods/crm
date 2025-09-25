@@ -3,51 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <title>Raise Purchase Request</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Choices.js for searchable dropdowns -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+  <!-- Your global styles -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <h2>Raise Purchase Request</h2>
-  <form id="purchase-request-form">
-    <!-- dealer name, category selector, item selector, qty inputs, remarks, etc. -->
-    <label for="dealer-name">Dealer Name:</label>
-    <input type="text" id="dealer-name" name="Dealer Name" required />
-
-    <div class="form-group">
-      <label for="category-selector">Category</label>
-      <select id="category-selector" required></select>
+  <div class="dashboard-container">
+    <div class="header">
+      <div class="logo-wrapper">
+        <img src="assets/ntwoodsimg.jpg" class="logo-img" alt="NT Logo" />
+      </div>
+      <div class="header-text">
+        <h1 class="company-name">NT Woods Pvt. Ltd.</h1>
+        <p id="crm-tagline">Raise Purchase Request</p>
+      </div>
     </div>
 
-    <label for="item-selector">Select Required Items:</label>
-    <select id="item-selector" multiple required></select>
-    <button type="button" id="add-custom-item-btn">Add Custom Item</button>
-    <button type="button" id="proceed-to-qty-btn">Next</button>
+    <!-- Styled container using modal-content class -->
+    <div class="modal-content" style="max-width:700px; margin:0 auto;">
+      <h2>Raise Purchase Request</h2>
+      <form id="purchase-request-form">
+        <label for="dealer-name">Dealer Name:</label>
+        <input type="text" id="dealer-name" name="Dealer Name" required />
 
-    <div id="qty-input-section" style="display:none;">
-      <h4>Enter Quantity for Each Item:</h4>
-      <div id="qty-fields-container"></div>
+        <div class="form-group">
+          <label for="category-selector">Category</label>
+          <select id="category-selector" name="Category" required>
+            <option value="">Select a category</option>
+          </select>
+        </div>
+
+        <label for="item-selector">Select Required Items:</label>
+        <select id="item-selector" multiple required></select>
+
+        <button type="button" id="add-custom-item-btn" style="margin-top: 5px; padding: 8px 16px;">Add Custom Item</button>
+        <button type="button" id="proceed-to-qty-btn" style="margin-top: 10px; padding: 8px 16px;">Next</button>
+
+        <div id="qty-input-section" style="display:none; margin-top: 15px;">
+          <h4>Enter Quantity for Each Item:</h4>
+          <div id="qty-fields-container"></div>
+        </div>
+
+        <label for="priority-level">Priority Level:</label>
+        <select id="priority-level" name="Priority Level" required>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+
+        <label for="remarks">Remarks:</label>
+        <textarea id="remarks" name="Remarks" rows="3"></textarea>
+
+        <button type="submit" id="submit-pr-button">Submit Request</button>
+        <div class="loading-spinner" id="pr-loading-spinner"></div>
+      </form>
     </div>
+  </div>
 
-    <label for="priority-level">Priority Level:</label>
-    <select id="priority-level" required>
-      <option value="Low">Low</option>
-      <option value="Medium">Medium</option>
-      <option value="High">High</option>
-    </select>
-
-    <label for="remarks">Remarks:</label>
-    <textarea id="remarks" rows="3"></textarea>
-
-    <button type="submit" id="submit-pr-button">Submit Request</button>
-    <div class="loading-spinner" id="pr-loading-spinner"></div>
-  </form>
-
+  <!-- Toast container -->
   <div id="toast-container"></div>
+
   <script>
-    // Load CRM_NAME from localStorage
-    window.CRM_NAME = localStorage.getItem("crmName");
+    // Make CRM name available globally from localStorage
+    window.CRM_NAME = localStorage.getItem("crmName") || "Unknown CRM";
   </script>
-  <script src="js/purchaseRequest.js" defer></script>
+
+  <!-- Your purchase request logic -->
+  <script src="js/purchaseRequest.js"></script>
+
+  <script>
+    // Ensure categories/products load immediately in standalone page
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof fetchIMSDataAndInit === "function") {
+        fetchIMSDataAndInit();
+      }
+    });
+  </script>
 </body>
 </html>
