@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Raise Purchase Request</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <h2>Raise Purchase Request</h2>
+  <form id="purchase-request-form">
+    <!-- dealer name, category selector, item selector, qty inputs, remarks, etc. -->
+    <label for="dealer-name">Dealer Name:</label>
+    <input type="text" id="dealer-name" name="Dealer Name" required />
+
+    <div class="form-group">
+      <label for="category-selector">Category</label>
+      <select id="category-selector" required></select>
+    </div>
+
+    <label for="item-selector">Select Required Items:</label>
+    <select id="item-selector" multiple required></select>
+    <button type="button" id="add-custom-item-btn">Add Custom Item</button>
+    <button type="button" id="proceed-to-qty-btn">Next</button>
+
+    <div id="qty-input-section" style="display:none;">
+      <h4>Enter Quantity for Each Item:</h4>
+      <div id="qty-fields-container"></div>
+    </div>
+
+    <label for="priority-level">Priority Level:</label>
+    <select id="priority-level" required>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+    </select>
+
+    <label for="remarks">Remarks:</label>
+    <textarea id="remarks" rows="3"></textarea>
+
+    <button type="submit" id="submit-pr-button">Submit Request</button>
+    <div class="loading-spinner" id="pr-loading-spinner"></div>
+  </form>
+
+  <div id="toast-container"></div>
+  <script>
+    // Load CRM_NAME from localStorage
+    window.CRM_NAME = localStorage.getItem("crmName");
+  </script>
+  <script src="js/purchaseRequest.js" defer></script>
+</body>
+</html>
