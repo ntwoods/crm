@@ -70,48 +70,6 @@
     </div>
   </div>
 
-  <div id="purchase-request-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-button">&times;</span>
-      <h2>Raise Purchase Request</h2>
-      <form id="purchase-request-form">
-        <label for="dealer-name">Dealer Name:</label>
-        <input type="text" id="dealer-name" name="Dealer Name" required>
-
-        <div class="form-group">
-          <label for="category-selector">Category</label>
-          <select id="category-selector" name="category-selector" required>
-            <option value="">Select a category</option>
-            <!-- JS will dynamically populate categories here -->
-          </select>
-        </div>
-        
-        <label for="item-selector">Select Required Items:</label>
-        <select id="item-selector" multiple required></select>
-        <button type="button" id="add-custom-item-btn" style="margin-top: 5px; padding: 8px 16px; margin-left: 5px;">Add Custom Item</button> 
-        <button type="button" id="proceed-to-qty-btn" style="margin-top: 10px; padding: 8px 16px;">Next</button>        
-        
-        <div id="qty-input-section" style="display:none; margin-top: 15px;">
-          <h4>Enter Quantity for Each Item:</h4>
-          <div id="qty-fields-container"></div>
-        </div>
-
-        <label for="priority-level">Priority Level:</label>
-        <select id="priority-level" name="Priority Level" required>
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-        </select>
-
-        <label for="remarks">Remarks:</label>
-        <textarea id="remarks" name="Remarks" rows="3"></textarea>
-
-        <button type="submit" id="submit-pr-button">Submit Request</button>
-        <div class="loading-spinner" id="pr-loading-spinner"></div>
-      </form>
-    </div>
-  </div>
-
   <div id="claim-request-modal" class="modal">
     <div class="modal-content">
       <span class="close-button" id="close-claim-modal-btn">&times;</span>
@@ -142,7 +100,6 @@
 
   <script src="js/generateTiles.js" defer></script>
   <script src="js/dashboard.js" defer></script>
-  <script src="js/purchaseRequest.js" defer></script>
   <script src="js/registerClaimRequest.js" defer></script>
 </body>
 </html>
