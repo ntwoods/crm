@@ -104,13 +104,20 @@
                 <th>Location</th>
                 <th>Marketing Person</th>
                 <th>CRM</th>
-                <th>File</th>
+                <th>Download</th>
               </tr>
             </thead>
             <tbody>
         `;
 
         json.data.forEach(item => {
+          // Extract the FILE_ID from the Google Sheets URL
+          let fileUrl = item.fileUrl || "";
+          let fileIdMatch = fileUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+          let downloadUrl = fileIdMatch 
+            ? `https://docs.google.com/spreadsheets/d/${fileIdMatch[1]}/export?format=xlsx`
+            : "#";
+
           table += `
             <tr>
               <td>${item.dealerName || ""}</td>
@@ -118,8 +125,8 @@
               <td>${item.marketingPerson || ""}</td>
               <td>${item.crm || ""}</td>
               <td>
-                <a href="${item.fileUrl}" target="_blank">
-                  <button>View File</button>
+                <a href="${downloadUrl}" target="_blank">
+                  <button>Download Excel</button>
                 </a>
               </td>
             </tr>
