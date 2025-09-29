@@ -8,4 +8,4 @@ setInterval(() => {
   if (!isModalOpen) { // Check the flag before reloading
     location.reload();
   }
-}, 10000); // Reload every 10 seconds
+}, 60000); // Reload every 10 seconds
