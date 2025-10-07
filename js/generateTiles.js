@@ -41,6 +41,13 @@ const cardsData = [
     url: "OwnerApprovalSOcrmView.html",
   },
   {
+    id: "sale-order",
+    level: "SO/Dispatch Slip",
+    title: "Sale Order / Dispatch Slip",
+    description: "Pending orders awaiting dispatch slip / sale order before proceeding.",
+    url: "attachDispatchSlip.html?mode=view&",
+  },  
+  {
     id: "level6",
     level: "Level-3",
     title: "Get Tentative Dispatch Date",
