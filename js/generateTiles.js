@@ -41,13 +41,6 @@ const cardsData = [
     url: "OwnerApprovalSOcrmView.html",
   },
   {
-    id: "sale-order",
-    level: "SO/Dispatch Slip",
-    title: "Sale Order / Dispatch Slip",
-    description: "Pending orders awaiting dispatch slip / sale order before proceeding.",
-    url: "",
-  },  
-  {
     id: "level6",
     level: "Level-3",
     title: "Get Tentative Dispatch Date",
@@ -90,9 +83,7 @@ cardsData.forEach((card) => {
   div.className = "workflow-card";
   div.id = `${card.id}-card`;
   div.onclick = () => {
-    const base = `https://ntwoods.github.io/ordertodispatch/${card.url}`;
-    const sep = base.includes("?") ? "&" : "?";
-    navigateTo(`${base}${sep}crm=${ENCODED_CRM}`);
+    navigateTo(`${base}crm=${ENCODED_CRM}`);
   };
 
   div.innerHTML = `
