@@ -9,6 +9,5 @@ const apiEndpoints = {
   level7: `https://script.google.com/macros/s/AKfycbxMxIzOQmHv3LPTh6ca6i5uuguyH615cnjA5emEGNT0rmWpJlnrcg-KWNVP1DORkkcX/exec?crm=${base}`,
   level8: `https://script.google.com/macros/s/AKfycbwUr0UhENK6RGtdvYMC6-V0Khwb3kibKP4SLXC4nzL6Hm4idr6P-Olx4XTWvgZ_e2xk-Q/exec?crm=${base}`,
   level9: `https://script.google.com/macros/s/AKfycbyJ1CdfyAhTOhvxCYrE16rBYAfdVlrYpBLHMJj1UBB_xJvdcrUE3RBwNC9TDNMJpaZlWg/exec?crm=${base}`,
-  saleOrder: `https://script.google.com/macros/s/AKfycbzIg93-NvjqrLEgr6zmk-weztixnBf1JiMko0wNkly9IQvdkU2LiUtgkbDcy99kCYZwQw/exec?crm=${base}`,  
   level10: `https://script.google.com/macros/s/AKfycbw8K5xr1V52_zKMfy9gJyWZE0kuxsu0Gjoo2bdNfIXz9-zDDxFCHp2i4mdrLDZxs-BFbA/exec?crm=${base}`
 };
