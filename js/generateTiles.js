@@ -45,7 +45,7 @@ const cardsData = [
     level: "SO/Dispatch Slip",
     title: "Sale Order / Dispatch Slip",
     description: "Pending orders awaiting dispatch slip / sale order before proceeding.",
-    url: "attachDispatchSlip.html?mode=view&",
+    url: "",
   },  
   {
     id: "level6",
