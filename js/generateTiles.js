@@ -82,9 +82,10 @@ cardsData.forEach((card) => {
   const div = document.createElement("div");
   div.className = "workflow-card";
   div.id = `${card.id}-card`;
-  div.onclick = () => {
-    navigateTo(`${base}crm=${ENCODED_CRM}`);
-  };
+  div.onclick = () =>
+    navigateTo(
+      `https://ntwoods.github.io/ordertodispatch/${card.url}?crm=${ENCODED_CRM}`
+    );
 
   div.innerHTML = `
     <div class="card-level">${card.level}</div>
