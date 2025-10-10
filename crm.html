@@ -4,6 +4,51 @@
   <meta charset="UTF-8" />
   <title>NT Woods CRM – Unified Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+/* Wider, cleaner modal */
+.modal .modal-content{
+  width: 92vw;           /* fill most of the viewport */
+  max-width: 1100px;     /* nice wide cap */
+  border-radius: 14px;
+}
+
+/* Taller scroll area so more rows are visible */
+#claim-request-modal .table-wrapper{
+  max-height: 55vh;      /* show more before vertical scrolling */
+  overflow: auto;
+}
+
+/* Make the products table fluid and neat */
+#claim-request-modal #products-table{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;   /* prevents column jiggle & overflow */
+  /* remove any min-width you might have set earlier */
+}
+
+#claim-request-modal #products-table th,
+#claim-request-modal #products-table td{
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+/* Inputs fill their cells nicely */
+#claim-request-modal input[type="text"],
+#claim-request-modal input[type="number"],
+#claim-request-modal textarea{
+  width: 100%;
+}
+
+/* Keep Qty compact and action column centered */
+#claim-request-modal .qty-input{ max-width: 110px; }
+#claim-request-modal .remove-row-btn{ min-width: 36px; }
+
+/* Header row */
+#claim-request-modal thead tr{ background:#f3f6ff; }    
+  </style>
   <script>
     let isModalOpen = false; // Global flag to control auto-reload
     const email = localStorage.getItem("crmEmail");
