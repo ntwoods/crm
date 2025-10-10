@@ -135,21 +135,28 @@
         </div>
 
         <div class="table-wrapper" style="overflow:auto; max-height: 45vh; border:1px solid #e5e7eb; border-radius:8px;">
-          <table id="products-table" style="width:100%; border-collapse:separate; border-spacing:0; min-width:780px;">
-            <thead>
-              <tr style="background:#f3f6ff;">
-                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb;">#</th>
-                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb;">Product</th>
-                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb;">Details</th>
-                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb; width:110px;">Qty</th>
-                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb;">Issue</th>
-                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb; width:56px;">&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody id="products-tbody">
-              <!-- First row inserted by JS on modal open -->
-            </tbody>
-          </table>
+              <table id="products-table">
+                <colgroup>
+                  <col style="width:52px;">          <!-- # -->
+                  <col style="width:30%;">           <!-- Product -->
+                  <col style="width:34%;">           <!-- Details -->
+                  <col style="width:120px;">         <!-- Qty -->
+                  <col style="width:28%;">           <!-- Issue -->
+                  <col style="width:56px;">          <!-- Remove -->
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Details</th>
+                    <th>Qty</th>
+                    <th>Issue</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody id="products-tbody"></tbody>
+              </table>
+
         </div>
         <p style="font-size:12px;color:#6b7280;margin:8px 2px 0;">
           Tip: Add multiple products. Each row has its own Details, Qty, and Issue.
