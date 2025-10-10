@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       // Same endpoint you used earlier (no-cors retained)
-      const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbzlQOit1O3GGI3N_kOSYD03PzLVGwqqjwyibkWddKsRD_nRDT96Ajg5jH4rcf5eqR0e_g/exec';
+      const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbw_fboaThUl8ReC8qOXTq6JNbYSJ_GciItm7JONC27F0_6O4oYGA_3F2GL1VFCvDeoO9A/exec';
 
       await fetch(googleAppsScriptUrl, {
         method: 'POST',
