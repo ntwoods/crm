@@ -71,32 +71,57 @@
     </div>
   </div>
 
-  <div id="claim-request-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-button" id="close-claim-modal-btn">&times;</span>
-      <h2>Register Claim Request</h2>
-      <form id="claim-request-form">
-        <label for="claim-dealer-name">Dealer Name:</label>
-        <input type="text" id="claim-dealer-name" name="Dealer Name" required>
+<!-- Claim Request Modal (UPDATED) -->
+<div id="claim-request-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" id="close-claim-modal-btn">&times;</span>
+    <h2>Register Claim Request</h2>
 
-        <label for="product">Product:</label>
-        <input type="text" id="product" name="Product" required>
+    <form id="claim-request-form">
+      <!-- Dealer -->
+      <label for="claim-dealer-name">Dealer Name:</label>
+      <input type="text" id="claim-dealer-name" name="Dealer Name" required />
 
-        <label for="qty">Quantity:</label>
-        <input type="number" id="qty" name="Qty" min="1" required>
+      <!-- Dynamic Products Table -->
+      <div class="products-block">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0 6px;">
+          <label style="margin:0;">Products</label>
+          <button type="button" id="add-product-row" class="secondary-btn">+ Add Product</button>
+        </div>
 
-        <label for="issue">Issue:</label>
-        <textarea id="issue" name="Issue" rows="3" required></textarea>
+        <div class="table-wrapper" style="overflow:auto; max-height: 45vh; border:1px solid #e5e7eb; border-radius:8px;">
+          <table id="products-table" style="width:100%; border-collapse:separate; border-spacing:0; min-width:780px;">
+            <thead>
+              <tr style="background:#f3f6ff;">
+                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb;">#</th>
+                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb;">Product</th>
+                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb;">Details</th>
+                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb; width:110px;">Qty</th>
+                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb;">Issue</th>
+                <th style="text-align:left;padding:10px;border-bottom:1px solid #e5e7eb; width:56px;">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody">
+              <!-- First row inserted by JS on modal open -->
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:12px;color:#6b7280;margin:8px 2px 0;">
+          Tip: Add multiple products. Each row has its own Details, Qty, and Issue.
+        </p>
+      </div>
 
-        <label for="image-attachments">Image Attachments (optional):</label>
-        <input type="file" id="image-attachments" name="Image Attachments" multiple accept="image/*">
-        
-        <button type="submit" id="submit-claim-button">Submit Claim</button>
-        <div class="loading-spinner" id="claim-loading-spinner"></div>
-      </form>
-    </div>
+      <!-- Images -->
+      <label for="image-attachments" style="margin-top:12px;">Image Attachments (optional):</label>
+      <input type="file" id="image-attachments" name="Image Attachments" multiple accept="image/*" />
+
+      <!-- Submit -->
+      <button type="submit" id="submit-claim-button">Submit Claim</button>
+      <div class="loading-spinner" id="claim-loading-spinner"></div>
+    </form>
   </div>
-
+</div>
+<!-- /Claim Request Modal -->
   <div id="toast-container"></div>
 
   <script src="js/generateTiles.js" defer></script>
