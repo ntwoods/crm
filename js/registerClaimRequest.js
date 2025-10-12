@@ -50,11 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
     tr.innerHTML = `
       <td class="row-idx" style="padding:10px;border-bottom:1px solid #eef2f7;">#</td>
       <td style="padding:6px 8px;border-bottom:1px solid #eef2f7;">
-        <input type="text" class="prod-input" placeholder="Product" required
+        <input type="text" class="prod-input" placeholder="Brand/Category" required
                value="${prefill.product ?? ''}" style="width:100%;">
       </td>
       <td style="padding:6px 8px;border-bottom:1px solid #eef2f7;">
-        <input type="text" class="details-input" placeholder="Details" 
+        <input type="text" class="details-input" placeholder="Shade/Size" required 
                value="${prefill.details ?? ''}" style="width:100%;">
       </td>
       <td style="padding:6px 8px;border-bottom:1px solid #eef2f7;">
