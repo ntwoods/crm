@@ -10,5 +10,6 @@ const apiEndpoints = {
   level8: `https://script.google.com/macros/s/AKfycbwUr0UhENK6RGtdvYMC6-V0Khwb3kibKP4SLXC4nzL6Hm4idr6P-Olx4XTWvgZ_e2xk-Q/exec?crm=${base}`,
   level9: `https://script.google.com/macros/s/AKfycbyJ1CdfyAhTOhvxCYrE16rBYAfdVlrYpBLHMJj1UBB_xJvdcrUE3RBwNC9TDNMJpaZlWg/exec?crm=${base}`,
   level10: `https://script.google.com/macros/s/AKfycbw8K5xr1V52_zKMfy9gJyWZE0kuxsu0Gjoo2bdNfIXz9-zDDxFCHp2i4mdrLDZxs-BFbA/exec?crm=${base}`,
+  level11: `https://script.google.com/macros/s/AKfycbw-Wh4YZ4zWjMa0msQ6aA00kbJrclRKModm1spzOQzfj7MxmMtAGU7o2bx7jK4QSgj6/exec?crm=${base}`,
   
 };
