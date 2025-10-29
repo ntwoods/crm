@@ -75,8 +75,14 @@ const cardsData = [
     description: "Call/Inform Owners about Dealer's Claim Request and record their response.",
     url: "informOwnersClaimReq.html",
   },
+  {
+    id: "level11",
+    level: "Gola-Orders",
+    title: "Manage Gola Orders ",
+    description: "Here are your Gola Orders, inform nextree and then confirm about the dispatch date.",
+    url: "golaOrder.html",
+  },  
 ];
-
 cardsData.forEach((card) => {
   const div = document.createElement("div");
   div.className = "workflow-card";
