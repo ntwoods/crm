@@ -76,69 +76,131 @@
   <div id="table-container"></div>
 
   <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbw4rP37nJ3yEFzi7yQRFHAii-e_37U9_nHtSaA_PKC86aBg5-dOupFUjsoFZThyej-UqQ/exec";
+    const CLIENT_CACHE_TTL_MS = 300000;
+    const FILE_ID_REGEX = /\/d\/([a-zA-Z0-9-_]+)/;
+
+    function getCacheKey(crm) {
+      return `crm-file-viewer:${crm.toLowerCase()}`;
+    }
+
+    function readClientCache(crm) {
+      try {
+        const raw = sessionStorage.getItem(getCacheKey(crm));
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || !parsed.expiry || !Array.isArray(parsed.data)) return null;
+        if (Date.now() > parsed.expiry) {
+          sessionStorage.removeItem(getCacheKey(crm));
+          return null;
+        }
+        return parsed.data;
+      } catch (_err) {
+        return null;
+      }
+    }
+
+    function writeClientCache(crm, data) {
+      try {
+        sessionStorage.setItem(
+          getCacheKey(crm),
+          JSON.stringify({
+            expiry: Date.now() + CLIENT_CACHE_TTL_MS,
+            data: data
+          })
+        );
+      } catch (_err) {
+        // Ignore cache write errors (e.g., storage quota reached).
+      }
+    }
+
+    function escapeHtml(value) {
+      return (value || "")
+        .toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function resolveDownloadUrl(item) {
+      if (item.downloadUrl) return item.downloadUrl;
+      const fileUrl = item.fileUrl || "";
+      const fileIdMatch = fileUrl.match(FILE_ID_REGEX);
+      return fileIdMatch
+        ? `https://docs.google.com/spreadsheets/d/${fileIdMatch[1]}/export?format=xlsx`
+        : "#";
+    }
+
+    function renderNoData(message) {
+      document.getElementById("table-container").innerHTML = `<p class='no-data'>${message}</p>`;
+    }
+
+    function renderTable(data) {
+      const rows = data.map(item => {
+        const downloadUrl = resolveDownloadUrl(item);
+        return `
+          <tr>
+            <td>${escapeHtml(item.dealerName)}</td>
+            <td>${escapeHtml(item.location)}</td>
+            <td>${escapeHtml(item.marketingPerson)}</td>
+            <td>${escapeHtml(item.crm)}</td>
+            <td>
+              <a href="${downloadUrl}" target="_blank">
+                <button>Download Excel</button>
+              </a>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      document.getElementById("table-container").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Dealer Name</th>
+              <th>Location</th>
+              <th>Marketing Person</th>
+              <th>CRM</th>
+              <th>Download</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
     async function loadData() {
       const crm = localStorage.getItem("crmName");
       if (!crm) {
-        document.getElementById("table-container").innerHTML = 
-          "<p class='no-data'>CRM name not found in localStorage.</p>";
+        renderNoData("CRM name not found in localStorage.");
         return;
       }
 
-      const apiUrl = `https://script.google.com/macros/s/AKfycbw4rP37nJ3yEFzi7yQRFHAii-e_37U9_nHtSaA_PKC86aBg5-dOupFUjsoFZThyej-UqQ/exec?crm=${encodeURIComponent(crm)}`;
+      const cachedData = readClientCache(crm);
+      if (cachedData) {
+        renderTable(cachedData);
+        return;
+      }
+
+      renderNoData("Loading records...");
+      const apiUrl = `${API_URL}?crm=${encodeURIComponent(crm)}`;
 
       try {
         const res = await fetch(apiUrl);
         const json = await res.json();
 
         if (json.status !== "success" || !json.data.length) {
-          document.getElementById("table-container").innerHTML = 
-            "<p class='no-data'>No records found for this CRM.</p>";
+          renderNoData("No records found for this CRM.");
           return;
         }
 
-        let table = `
-          <table>
-            <thead>
-              <tr>
-                <th>Dealer Name</th>
-                <th>Location</th>
-                <th>Marketing Person</th>
-                <th>CRM</th>
-                <th>Download</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-
-        json.data.forEach(item => {
-          // Extract the FILE_ID from the Google Sheets URL
-          let fileUrl = item.fileUrl || "";
-          let fileIdMatch = fileUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
-          let downloadUrl = fileIdMatch 
-            ? `https://docs.google.com/spreadsheets/d/${fileIdMatch[1]}/export?format=xlsx`
-            : "#";
-
-          table += `
-            <tr>
-              <td>${item.dealerName || ""}</td>
-              <td>${item.location || ""}</td>
-              <td>${item.marketingPerson || ""}</td>
-              <td>${item.crm || ""}</td>
-              <td>
-                <a href="${downloadUrl}" target="_blank">
-                  <button>Download Excel</button>
-                </a>
-              </td>
-            </tr>
-          `;
-        });
-
-        table += "</tbody></table>";
-        document.getElementById("table-container").innerHTML = table;
+        writeClientCache(crm, json.data);
+        renderTable(json.data);
 
       } catch (err) {
-        document.getElementById("table-container").innerHTML = 
-          `<p class='no-data'>Error fetching data: ${err.message}</p>`;
+        renderNoData(`Error fetching data: ${err.message}`);
       }
     }
 
