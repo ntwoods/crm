@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Load categories & items and initialize dropdowns
   async function fetchIMSDataAndInit() {
-    const url = 'https://docs.google.com/spreadsheets/d/1UeohB4IPgEzGwybOJaIKpCIa38A4UvBstM8waqYv9V0/gviz/tq?tqx=out:csv&sheet=IMS';
+    const url = 'https://docs.google.com/spreadsheets/d/1kJbdrQXtjktQm5ZzmSkuBzAhY4QGZN51e3a2QRy2g70/gviz/tq?tqx=out:csv&sheet=IMS';
     try {
       const response = await fetch(url);
       const csvText = await response.text();
